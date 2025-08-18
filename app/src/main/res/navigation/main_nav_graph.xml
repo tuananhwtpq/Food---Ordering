@@ -37,4 +37,9 @@
             android:id="@+id/action_customerOrdersFragment_to_customerHomeFragment"
             app:destination="@id/customerHomeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/ownerHomeFragment"
+        android:name="com.example.food_order.ui.owner.home.OwnerHomeFragment"
+        android:label="fragment_owner_home"
+        tools:layout="@layout/fragment_owner_home" />
 </navigation>
