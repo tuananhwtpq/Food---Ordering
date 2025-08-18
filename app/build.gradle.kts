@@ -70,6 +70,7 @@ dependencies {
 
     // 6. Dependency Injection (Hilt)
     implementation(libs.hilt.android)
+    //implementation(libs.activity)
     kapt(libs.hilt.compiler)
 
     // Test
