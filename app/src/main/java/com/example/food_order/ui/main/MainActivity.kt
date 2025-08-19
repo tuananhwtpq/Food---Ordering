@@ -30,6 +30,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             // Load menu của customer
             binding.bottomNavigation.inflateMenu(R.menu.customer_bottom_nav)
         } else { // userRole == "owner"
+
             // Load menu của owner
             binding.bottomNavigation.inflateMenu(R.menu.owner_bottom_nav)
         }
