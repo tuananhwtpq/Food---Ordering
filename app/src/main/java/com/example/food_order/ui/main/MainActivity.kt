@@ -31,8 +31,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             navGraph.setStartDestination(R.id.customerHomeFragment)
             binding.bottomNavigation.inflateMenu(R.menu.customer_bottom_nav)
         } else { // userRole == "owner"
+
             // Đặt điểm xuất phát cho owner
             navGraph.setStartDestination(R.id.ownerHomeFragment) // Ví dụ
+
+
+            // Load menu của owner
+
             binding.bottomNavigation.inflateMenu(R.menu.owner_bottom_nav)
         }
         navController.graph = navGraph
