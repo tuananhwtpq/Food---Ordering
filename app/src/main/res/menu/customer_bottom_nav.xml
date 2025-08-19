@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/customerHomeFragment"
+        android:icon="@drawable/home_fh"
+        android:title="Trang chủ" />
+    <item
+        android:id="@+id/cartFragment"
+        android:icon="@drawable/shopping_cart"
+        android:title="Giỏ hàng" />
+    <item
+        android:id="@+id/customerOrdersFragment"
+        android:icon="@drawable/order_delivery"
+        android:title="Đơn hàng" />
+
+</menu>

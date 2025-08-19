@@ -1,0 +1,124 @@
+<resources>
+    <string name="app_name">Food_Order</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_login">WE SAY HELLO!</string>
+    <string name="wellcome_back_title">Welcome back. Use your email\n and password to log in</string>
+    <string name="sign_up_text">Don\'t have an account? <font color="#4C3673"><b>Sign up</b></font> </string>
+    <string name="login_text">Have an account? <font color="#4C3673"><b>Log in</b></font> </string>
+    <string name="sign_up_fragment_title">Sign up to see photos, videos and listen to music\n from your friends</string>
+    <string name="aggree_text">By signing up, you agree to our <font color="#4C3673"><b>Term of Services</b></font> </string>
+    <string name="trouble_login_text">Trouble logging in?</string>
+    <string name="enter_email_and_user_name">Enter your email or username and we\'ll\n send you a link to get back into your account</string>
+    <string name="hint_enter_email_password">Email or Username</string>
+    <string name="forgetpw_send_login_link">Send login link</string>
+    <string name="forget_pw_or">or</string>
+    <string name="forget_ps_create_account">Create new account</string>
+    <string name="home_ready_txt">Are you ready?</string>
+    <string name="home_hint_enter_email">Email or UserName</string>
+    <string name="email">Email</string>
+    <string name="login_hint_email">abc123@gmail.com</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="btn_log_in">Log In</string>
+    <string name="tv_login_with_other">Or Login With</string>
+    <string name="user_name">User name</string>
+    <string name="signup_hint_user_name">Hoàng Diễm Quỳnh</string>
+    <string name="re_enter_password">Re-enter password</string>
+    <string name="btn_sign_up">Sign up</string>
+    <string name="signup_tv_signup_with">Or Sign Up With</string>
+    <string name="facebook">facebook</string>
+    <string name="google">google</string>
+    <string name="skip">Skip</string>
+    <string name="verify_your_email">Verify your email</string>
+    <string name="enter_your_code_here">Enter your code here</string>
+    <string name="resend_code">Having problem? <font color="#4C3673"><b>Resend code</b></font></string>
+    <string name="enter_a_new_password">Enter a new password</string>
+    <string name="create_strong_pw">Create strong and secure password that\n protect your account</string>
+    <string name="wrong_password">Your password is incorrect</string>
+    <string name="enter_code">enter code</string>
+
+    //Onboarding
+    <string name="view_and_upload_photos">View and upload photos to the community</string>
+    <string name="listen_to_music">Listen to music and upload music</string>
+    <string name="watch_video_upload">Watch videos and upload videos</string>
+
+    <string name="check_funny_photos">You can check out funny photos your friends\n post, and also snap pictures right from\n the app.</string>
+    <string name="listen_music">You can listen to relaxing music and set a\n sleep timer, as well as upload music to\n the app</string>
+    <string name="watch_friend_shorts">You can watch your friends\' short videos with\n funny content, as well as record directly within\n the app</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="date_of_birthday">2025-01-01</string>
+    <string name="gender">Gender</string>
+    <string name="select_gender">Select gender</string>
+    <string name="search">Search</string>
+    <string name="mr_ben">Mr.Ben</string>
+    <string name="video">Video</string>
+    <string name="posts">Posts</string>
+    <string name="music">Music</string>
+    <string name="diem_quynh">Diem Quynh</string>
+    <string name="_10">10</string>
+    <string name="_1_5k">1.5k</string>
+    <string name="followers">followers</string>
+    <string name="following">following</string>
+    <string name="lorem">Nguowi ta thuong noi gi do bla bla blahdbajsdjasbndbnasbndbasnbdnabsdnbasnd</string>
+    <string name="logout">Logout</string>
+    <string name="edit_profile">Chỉnh sửa hồ sơ</string>
+    <string name="next">Next</string>
+    <string name="new_post">New Post</string>
+    <string name="setting_and_activity">Setting and activity</string>
+    <string name="saved">Saved</string>
+    <string name="favorite">Favorite</string>
+    <string name="activity">Activity</string>
+    <string name="setting">Setting</string>
+    <string name="language">Language</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="more_info_and_support">More info and support</string>
+    <string name="help">Help</string>
+    <string name="anh_back">anh back</string>
+    <string name="password_2">Password</string>
+    <string name="notifications">Notifications</string>
+    <string name="about">About</string>
+    <string name="add_account">Add account</string>
+    <string name="log_out">Log out</string>
+    <string name="we_bare_bear">We bare bear</string>
+    <string name="playlist">Playlist</string>
+    <string name="show_all">Show all</string>
+    <string name="recent">Recent</string>
+    <string name="recommended_for_day">Recommended for day</string>
+    <string name="m_t_k_t_n_i">Mất kết nối</string>
+    <string name="d_ng_domic">Dương Domic</string>
+    <string name="we_don_t_talk_anymore">We don’t talk anymore</string>
+    <string name="charlie_puth_selena_gomez">Charlie Puth, Selena Gomez</string>
+    <string name="your_list">Your list</string>
+    <string name="nhap_pass_word">Nhap pass word</string>
+    <string name="re_enter_password_2">Re-enter password</string>
+    <string name="_1_000">1,000</string>
+    <string name="post">Post</string>
+    <string name="select_multiple">SELECT MULTIPLE</string>
+    <string name="tv_permission_denied">Bạn đã từ chối quyền truy cập. Để sử dụng tính năng này, vui lòng cấp quyền trong phần Cài Đặt</string>
+    <string name="go_to_setting">Đi đến phần Cài Đặt</string>
+    <string name="edit_profile_2">Edit Profile</string>
+    <string name="share_profile">Share Profile</string>
+    <string name="favorite_2">Favorite</string>
+    <string name="save">Save</string>
+    <string name="change_profile_picture">Change profile picture</string>
+    <string name="add_a_caption">Add a caption...</string>
+    <string name="see_post">See post</string>
+    <string name="turn_of_commenting">Turn of commenting</string>
+    <string name="everyone">Everyone</string>
+    <string name="hide_like">Hide like and view counts on this post</string>
+    <string name="post_now">Post now</string>
+    <string name="what_s_on_your_mind">What’s on your mind?</string>
+    <string name="follow">Follow</string>
+    <string name="add_image">Add image</string>
+    <string name="_5_t7_15_08">5 T7 15:08</string>
+    <string name="aaaaa">Woaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</string>
+    <string name="replay">Replay</string>
+    <string name="banla">Bạn là?</string>
+    <string name="customer">Khách hàng</string>
+
+
+</resources>

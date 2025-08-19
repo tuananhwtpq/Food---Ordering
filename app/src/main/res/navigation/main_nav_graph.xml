@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/customerHomeFragment">
+    <fragment
+        android:id="@+id/customerHomeFragment"
+        android:name="com.example.food_order.ui.customer.home.CustomerHomeFragment"
+        android:label="fragment_customer_home"
+        tools:layout="@layout/fragment_customer_home">
+        <action
+            android:id="@+id/action_customerHomeFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.example.food_order.ui.customer.cart.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart">
+        <action
+            android:id="@+id/action_cartFragment_to_customerOrdersFragment"
+            app:destination="@id/customerOrdersFragment" />
+        <action
+            android:id="@+id/action_cartFragment_to_customerHomeFragment"
+            app:destination="@id/customerHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/customerOrdersFragment"
+        android:name="com.example.food_order.ui.owner.CustomerOrdersFragment"
+        android:label="fragment_customer_orders"
+        tools:layout="@layout/fragment_customer_orders">
+        <action
+            android:id="@+id/action_customerOrdersFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_customerOrdersFragment_to_customerHomeFragment"
+            app:destination="@id/customerHomeFragment" />
+    </fragment>
+</navigation>
