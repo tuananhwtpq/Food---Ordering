@@ -10,7 +10,7 @@
         android:icon="@drawable/shopping_cart"
         android:title="Đơn hàng" />
     <item
-        android:id="@+id/listItemFragment"
+        android:id="@+id/menuRestaurantFragment"
         android:icon="@drawable/list"
         android:title="Thực đơn" />
 </menu>

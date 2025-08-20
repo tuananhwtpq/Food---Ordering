@@ -43,20 +43,11 @@
         android:label="fragment_owner_home"
         tools:layout="@layout/fragment_owner_home" >
         <action
-            android:id="@+id/action_ownerHomeFragment_to_listItemFragment"
-            app:destination="@id/listItemFragment" />
-        <action
             android:id="@+id/action_ownerHomeFragment_to_deliveryFragment"
             app:destination="@id/deliveryFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/listItemFragment"
-        android:name="com.example.food_order.ui.owner.listitem.ListItemFragment"
-        android:label="fragment_list_item"
-        tools:layout="@layout/fragment_list_item" >
         <action
-            android:id="@+id/action_listItemFragment_to_ownerHomeFragment"
-            app:destination="@id/ownerHomeFragment" />
+            android:id="@+id/action_ownerHomeFragment_to_menuRestaurantFragment"
+            app:destination="@id/menuRestaurantFragment" />
     </fragment>
     <fragment
         android:id="@+id/deliveryFragment"
@@ -66,5 +57,20 @@
         <action
             android:id="@+id/action_deliveryFragment_to_ownerHomeFragment"
             app:destination="@id/ownerHomeFragment" />
+        <action
+            android:id="@+id/action_deliveryFragment_to_menuRestaurantFragment"
+            app:destination="@id/menuRestaurantFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/menuRestaurantFragment"
+        android:name="com.example.food_order.ui.owner.listitem.MenuRestaurantFragment"
+        android:label="fragment_menu_restaurant"
+        tools:layout="@layout/fragment_menu_restaurant" >
+        <action
+            android:id="@+id/action_menuRestaurantFragment_to_ownerHomeFragment"
+            app:destination="@id/ownerHomeFragment" />
+        <action
+            android:id="@+id/action_menuRestaurantFragment_to_deliveryFragment"
+            app:destination="@id/deliveryFragment" />
     </fragment>
 </navigation>

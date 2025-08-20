@@ -1,4 +1,4 @@
-package com.example.food_order.ui.owner.home
+package com.example.food_order.ui.owner.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +11,15 @@ import java.text.NumberFormat
 import java.util.Locale
 
 data class FoodQty(val name: String, val qty: Int)
+
 data class OrderSimple(
     val id: String,
-    val status: String,              // "PENDING", "ACCEPTED", ...
-    val customer: String?,           // có thể null
+    val status: String,          // "PENDING", "ACCEPTED", ...
+    val customer: String?,       // có thể null
     val address: String?,
     val note: String?,
-    val total: Long,                 // VND
-    val timeText: String,            // "HH:mm" hoặc "dd/MM HH:mm"
+    val total: Long,             // VND
+    val timeText: String,        // "HH:mm" hoặc "dd/MM HH:mm"
     val items: List<FoodQty>
 )
 
@@ -37,28 +38,30 @@ class OrderSimpleAdapter(
 
     fun current(): List<OrderSimple> = data
 
-    inner class VH(view: View) : RecyclerView.ViewHolder(view) {
-        private val tvOrderId: TextView = view.findViewById(R.id.tvOrderId)
-        private val tvStatus: TextView  = view.findViewById(R.id.tvStatus)
-        private val tvCustomer: TextView = view.findViewById(R.id.tvCustomer)
-        private val tvAddress: TextView  = view.findViewById(R.id.tvAddress)
-        private val tvNote: TextView     = view.findViewById(R.id.tvNote)
-        private val tvTotal: TextView    = view.findViewById(R.id.tvTotal)
-        private val tvTime: TextView     = view.findViewById(R.id.tvTime)
-        private val tvItemsRight: TextView = view.findViewById(R.id.tvItemsRight)
-        private val btnAccept: Button    = view.findViewById(R.id.btnAccept)
-        private val btnReject: Button    = view.findViewById(R.id.btnReject)
+    inner class VH(v: View) : RecyclerView.ViewHolder(v) {
+        private val tvOrderId: TextView = v.findViewById(R.id.tvOrderId)
+        private val tvStatus: TextView = v.findViewById(R.id.tvStatus)
+        private val tvCustomer: TextView = v.findViewById(R.id.tvCustomer)
+        private val tvAddress: TextView = v.findViewById(R.id.tvAddress)
+        private val tvNote: TextView = v.findViewById(R.id.tvNote)
+        private val tvTotal: TextView = v.findViewById(R.id.tvTotal)
+        private val tvTime: TextView = v.findViewById(R.id.tvTime)
+        private val tvItemsRight: TextView = v.findViewById(R.id.tvItemsRight)
+        private val btnAccept: Button = v.findViewById(R.id.btnAccept)
+        private val btnReject: Button = v.findViewById(R.id.btnReject)
 
         fun bind(o: OrderSimple) {
             tvOrderId.text = "Đơn #${o.id.takeLast(6)}"
-            tvStatus.text  = o.status
-            bindOptional(tvCustomer, o.customer?.let { "Khách: $it" })
-            bindOptional(tvAddress,  o.address?.let { "Địa chỉ: $it" })
-            bindOptional(tvNote,     o.note?.let { "Ghi chú: $it" })
-            tvTotal.text = o.total.toVnd()
-            tvTime.text  = o.timeText
+            tvStatus.text = o.status
 
-            // Bên phải: "SL × Tên món", tối đa 4 dòng cho gọn
+            bindOptional(tvCustomer, o.customer?.let { "Khách: $it" })
+            bindOptional(tvAddress, o.address?.let { "Địa chỉ: $it" })
+            bindOptional(tvNote, o.note?.let { "Ghi chú: $it" })
+
+            tvTotal.text = o.total.toVnd()
+            tvTime.text = o.timeText
+
+            // Cột phải: liệt kê tối đa 4 dòng "SL × Tên món" cho gọn
             tvItemsRight.text = o.items.take(4).joinToString("\n") { "${it.qty}× ${it.name}" }
 
             btnAccept.setOnClickListener { onAccept(o) }
@@ -77,7 +80,7 @@ class OrderSimpleAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_order_simple, parent, false)
+            .inflate(R.layout.item_order, parent, false)
         return VH(v)
     }
 
