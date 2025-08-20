@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detailScroll"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Nút đóng -->
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Ảnh -->
+        <ImageView
+            android:id="@+id/ivImageLarge"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            android:background="#EEEEEE"
+            app:layout_constraintTop_toBottomOf="@id/btnClose"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:src="@drawable/new_google" />
+
+        <!-- Tên món (EditText – khóa sẵn) -->
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Tên món"
+            android:enabled="false"
+            android:inputType="textCapWords"
+            app:layout_constraintTop_toBottomOf="@id/ivImageLarge"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/etPrice"
+            tools:text="Bún chả Hà Nội" />
+
+        <!-- Giá (EditText – khóa sẵn) -->
+        <EditText
+            android:id="@+id/etPrice"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:hint="Giá"
+            android:enabled="false"
+            android:inputType="numberDecimal"
+            app:layout_constraintTop_toTopOf="@id/etName"
+            app:layout_constraintBottom_toBottomOf="@id/etName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/etName"
+            tools:text="45000" />
+
+        <!-- Mô tả (EditText – khóa sẵn) -->
+        <EditText
+            android:id="@+id/etDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Mô tả"
+            android:enabled="false"
+            android:inputType="textMultiLine"
+            android:minLines="2"
+            android:gravity="top"
+            app:layout_constraintTop_toBottomOf="@id/etName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Thịt nướng, bún, rau sống và nước mắm chua ngọt..." />
+
+        <!-- Ảnh URL (EditText – khóa sẵn) -->
+        <EditText
+            android:id="@+id/etImageUrl"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Ảnh (URL)"
+            android:enabled="false"
+            android:inputType="textUri"
+            app:layout_constraintTop_toBottomOf="@id/etDescription"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="https://example.com/food.jpg" />
+
+        <!-- ID (chỉ đọc) -->
+        <EditText
+            android:id="@+id/etIdReadOnly"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="ID"
+            android:enabled="false"
+            android:textColor="#666666"
+            app:layout_constraintTop_toBottomOf="@id/etImageUrl"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/etRestaurantIdReadOnly"
+            tools:text="9f1a..." />
+
+        <!-- Restaurant ID (chỉ đọc) -->
+        <EditText
+            android:id="@+id/etRestaurantIdReadOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Restaurant ID"
+            android:enabled="false"
+            android:textColor="#666666"
+            app:layout_constraintBaseline_toBaselineOf="@id/etIdReadOnly"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="r_001" />
+
+        <!-- CreatedAt (chỉ đọc) -->
+        <EditText
+            android:id="@+id/etCreatedAtReadOnly"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:hint="Tạo lúc"
+            android:enabled="false"
+            android:textColor="#666666"
+            app:layout_constraintTop_toBottomOf="@id/etIdReadOnly"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="2025-08-20T09:30:00Z" />
+
+        <!-- Thanh nút đáy -->
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Xoá"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/etCreatedAtReadOnly"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnEdit"
+            app:layout_constraintHorizontal_weight="1" />
+
+        <Button
+            android:id="@+id/btnEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Sửa"
+            app:layout_constraintEnd_toStartOf="@id/btnSave"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/btnDelete"
+            app:layout_constraintTop_toTopOf="@id/btnDelete" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Lưu"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/btnEdit"
+            app:layout_constraintStart_toEndOf="@id/btnEdit"
+            app:layout_constraintBottom_toBottomOf="@id/btnDelete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
