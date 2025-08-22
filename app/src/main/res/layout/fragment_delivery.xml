@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/ownerHomeFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.owner.delivery.DeliveryFragment">
+    tools:context="com.example.food_order.ui.owner.home.OwnerHomeFragment"
+    tools:layout="@layout/fragment_owner_home">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewOrderClassification"
@@ -89,6 +91,18 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
     <TextView
+        android:id="@+id/emptyView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Chưa có đơn hàng"
+        android:gravity="center"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tvDelivery"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <TextView
         android:id="@+id/tvDelivery"
         android:layout_marginStart="12dp"
         android:layout_width="match_parent"
@@ -106,6 +120,7 @@
         android:paddingBottom="8dp"
         android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@id/tvDelivery"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginHorizontal="12dp"
         android:layout_marginVertical="16dp"
         tools:listitem="@layout/list_item_delivery">

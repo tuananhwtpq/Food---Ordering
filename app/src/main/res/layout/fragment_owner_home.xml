@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/ownerHomeFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.owner.home.OwnerHomeFragment">
 
@@ -77,7 +78,7 @@
                 app:layout_constraintEnd_toEndOf="@id/tvOrdersToday"/>
             <TextView
                 android:id="@+id/tvOrdersPending"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:text="Đơn hàng chờ:"
                 android:layout_marginStart="22dp"

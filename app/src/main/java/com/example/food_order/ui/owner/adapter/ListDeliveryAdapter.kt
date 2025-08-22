@@ -1,4 +1,4 @@
-package com.example.food_order.ui.adapter
+package com.example.food_order.ui.owner.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

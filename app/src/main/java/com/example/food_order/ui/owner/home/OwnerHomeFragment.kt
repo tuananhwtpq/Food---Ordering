@@ -4,50 +4,46 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.food_order.data.demo.OrderDemoStore
-import com.example.food_order.data.repository.OrderListSource.OrderStatus
 import com.example.food_order.databinding.FragmentOwnerHomeBinding
+import com.example.food_order.ui.orders.OrdersSharedViewModel
+import com.example.food_order.R
+import com.example.food_order.ui.owner.adapter.OwnerOrdersAdapter
 
 class OwnerHomeFragment : Fragment() {
 
     private var _binding: FragmentOwnerHomeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var adapter: OwnerOrderAdapter
+    private val ordersVM: OrdersSharedViewModel by activityViewModels()
+    private lateinit var adapter: OwnerOrdersAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentOwnerHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecycler()
 
-        adapter = OwnerOrderAdapter(
-            onAccept = {
-                OrderDemoStore.accept(it.id)
-                Toast.makeText(requireContext(), "Đã chấp nhận đơn #${it.id}", Toast.LENGTH_SHORT).show()
-            },
-            onReject = {
-                OrderDemoStore.reject(it.id)
-                Toast.makeText(requireContext(), "Đã từ chối đơn #${it.id}", Toast.LENGTH_SHORT).show()
-            }
+        ordersVM.pending.observe(viewLifecycleOwner) { list ->
+            adapter.submitList(list)
+            binding.tvListOrderPending.text = "Danh sách đơn hàng chờ: (${list.size})"
+        }
+    }
+
+    private fun setupRecycler() {
+        adapter = OwnerOrdersAdapter(
+            data = mutableListOf(),
+            onAccept = { ordersVM.accept(it) },
+            onReject = { ordersVM.reject(it) }
         )
-
         binding.rvListOrderPending.layoutManager = LinearLayoutManager(requireContext())
         binding.rvListOrderPending.adapter = adapter
-
-        // Chỉ show đơn đang chờ duyệt trên Home
-        OrderDemoStore.orders.observe(viewLifecycleOwner, Observer { list ->
-            val pending = (list ?: mutableListOf()).filter { it.status == OrderStatus.PENDING_ACCEPTANCE }
-            adapter.submitList(pending)
-        })
+        binding.rvListOrderPending.setHasFixedSize(true)
     }
 
     override fun onDestroyView() {
