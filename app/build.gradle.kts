@@ -70,8 +70,13 @@ dependencies {
 
     // 6. Dependency Injection (Hilt)
     implementation(libs.hilt.android)
-    implementation("androidx.compose.ui:ui-graphics-android:1.6.7")
-    //implementation(libs.activity)
+//    implementation("androidx.compose.ui:ui-graphics-android:1.6.7")
+//    //implementation(libs.activity)
+//    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+//    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+//    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     kapt(libs.hilt.compiler)
 
     // Test

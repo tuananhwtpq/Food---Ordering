@@ -11,6 +11,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.food_order.R
 import com.example.food_order.base_view.BaseActivity
 import com.example.food_order.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
+
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 

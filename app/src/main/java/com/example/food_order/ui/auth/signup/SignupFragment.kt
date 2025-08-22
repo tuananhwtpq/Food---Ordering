@@ -1,22 +1,36 @@
 package com.example.food_order.ui.auth.signup
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import com.example.food_order.MainApplication
 import com.example.food_order.R
 import com.example.food_order.base_view.BaseFragment
+import com.example.food_order.data.model.request.SignupRequest
 import com.example.food_order.databinding.FragmentSignupBinding
+import com.example.food_order.ui.main.MainActivity
+import com.example.food_order.utils.extension.launchOnStarted
 import com.example.food_order.utils.extension.showToast
+import com.example.food_order.utils.state.SignupUiState
 import com.google.gson.Gson
 import kotlin.toString
 
 
 class SignupFragment : BaseFragment<FragmentSignupBinding>() {
 
-    private var userRole: String? = null
+    private val viewModel: SignupViewModel by viewModels {
+        val application = requireActivity().application as MainApplication
+        SignupViewModelFactory(
+            application.authRepository,
+            application.sessionManager
+        )
+    }
+
 
     override fun getViewBinding(
         inflater: LayoutInflater,
@@ -28,16 +42,31 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>() {
     override fun setupView() {
         super.setupView()
 
-        arguments?.let {
-            userRole = it.getString("userRole")
-        }
-
-        showToast("userRole: $userRole")
 
     }
 
     override fun observeData() {
         super.observeData()
+
+        launchOnStarted {
+            viewModel.signupUiState.collect { state ->
+                // binding.loadingView.isVisible = state is SignupUiState.Loading
+
+                when (state) {
+                    is SignupUiState.Success -> {
+                        navigateToMain(state.authResponse.role)
+                    }
+
+                    is SignupUiState.Error -> {
+
+                        showToast(state.message)
+                    }
+
+                    else -> Unit
+                }
+            }
+        }
+
     }
 
     override fun initListener() {
@@ -49,7 +78,7 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>() {
 
         //Xử lý sau
         binding.signupButton.setOnClickListener {
-            clickSignupButton()
+            handleSignupClicked()
         }
     }
 
@@ -57,33 +86,41 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>() {
         super.onBack()
     }
 
-    private fun clickSignupButton() {
-        val email = binding.edEnterEmail.text.toString()
-        val password = binding.edPassword.text.toString()
-        val username = binding.edUserName.text.toString()
-        val reEnterPw = binding.edReEnterpw.text.toString()
-        val checkbox = binding.checkboxSignUp.isChecked
+    private fun handleSignupClicked() {
+        val name = binding.edUserName.text.toString().trim()
+        val email = binding.edEnterEmail.text.toString().trim()
+        val password = binding.edPassword.text.toString().trim()
+        val rePassword = binding.edReEnterpw.text.toString().trim()
 
-//        if (!viewModel.validateLoginInput(username, email, password, reEnterPw, checkbox)) {
-//            return
-//        }
-//        if (!binding.checkboxSignUp.isChecked) {
-//            showToast("Bạn cần đồng ý với điều khoản!")
-//            return
-//        }
-//
-//        //Sau sẽ cập nhật ở Profile sau
-//        val registerRequest = RegisterRequest(
-//            username = username,
-//            email = email,
-//            password = password,
-//            firstName = "first_name",
-//            lastName = "last_name",
-//            dob = "2024-01-01",
-//            gender = "MALE"
-//        )
-//        Log.d("REGISTER_DATA", Gson().toJson(registerRequest))
-//        viewModel.register(registerRequest)
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            showToast("Vui lòng điền đầy đủ thông tin")
+            return
+        }
+        if (password != rePassword) {
+            showToast("Mật khẩu không khớp")
+            return
+        }
+        if (!binding.checkboxSignUp.isChecked) {
+            showToast("Bạn cần đồng ý với điều khoản")
+            return
+        }
+
+        val selectedRole = when (binding.radioGroupRole.checkedRadioButtonId) {
+            R.id.radioButtonOwner -> "owner"
+            else -> "customer"
+        }
+
+        val request = SignupRequest(name, email, password, selectedRole)
+        viewModel.signupUser(request)
+    }
+
+    private fun navigateToMain(userRole: String) {
+        showToast("Đăng ký thành công với vai trò: $userRole")
+        val intent = Intent(requireActivity(), MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("USER_ROLE", userRole)
+        }
+        startActivity(intent)
     }
 
 
