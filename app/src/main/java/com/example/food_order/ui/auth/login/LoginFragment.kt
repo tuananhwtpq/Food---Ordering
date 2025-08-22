@@ -18,7 +18,6 @@ import kotlin.toString
 
 class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
-    private var userRole: String? = null
 
     override fun getViewBinding(
         inflater: LayoutInflater,
@@ -29,12 +28,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
     override fun setupView() {
         super.setupView()
-
-        arguments?.let {
-            userRole = it.getString("userRole")
-        }
-
-        showToast("userRole: $userRole")
 
     }
 
@@ -64,19 +57,30 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         val email = binding.loginEmail.text.toString().trim()
         val password = binding.loginPassword.text.toString().trim()
 
-        if (email.isEmpty() || password.isEmpty()) {
-            showToast("Vui lòng nhập đầy đủ thông tin")
-            return
+        val selectedRole = when (binding.radioGroupRole.checkedRadioButtonId) {
+            R.id.radioButtonOwner -> "owner"
+            else -> "customer"
         }
 
-        showToast("Đăng nhập thành công!")
+        if (email == "admin" && password == "admin" && selectedRole == "owner") {
+            navigateToMain("owner")
 
+        } else if (email == "customer" && password == "123456" && selectedRole == "customer") {
+            navigateToMain("customer")
+
+        } else {
+            binding.errorTxt.text = "Email, mật khẩu hoặc vai trò không đúng"
+            binding.errorTxt.isVisible = true
+        }
+    }
+
+    private fun navigateToMain(userRole: String) {
+        showToast("Đăng nhập thành công với vai trò: $userRole")
         val intent = Intent(requireActivity(), MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra("USER_ROLE", userRole)
         }
         startActivity(intent)
-
+        requireActivity().finish()
     }
 
 

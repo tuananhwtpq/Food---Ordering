@@ -29,7 +29,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         if (userRole == "customer") {
             navGraph.setStartDestination(R.id.customerHomeFragment)
             binding.bottomNavigation.inflateMenu(R.menu.customer_bottom_nav)
-        } else { // userRole == "owner"
+        } else {
 
             navGraph.setStartDestination(R.id.ownerHomeFragment)
 
