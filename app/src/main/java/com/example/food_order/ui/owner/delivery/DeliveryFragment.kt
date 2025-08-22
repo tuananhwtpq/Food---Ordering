@@ -1,60 +1,85 @@
 package com.example.food_order.ui.owner.delivery
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.food_order.R
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.food_order.data.repository.OrderListSource
+import com.example.food_order.data.repository.OrderListSource.OrderStatus
+import com.example.food_order.databinding.FragmentDeliveryBinding
+import com.example.food_order.ui.orders.OrdersSharedViewModel
+import com.example.food_order.ui.owner.adapter.ListDeliveryAdapter
+import com.example.food_order.utils.extension.showToast
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [DeliveryFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class DeliveryFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private var _binding: FragmentDeliveryBinding? = null
+    private val binding get() = _binding!!
+
+    private val ordersVM: OrdersSharedViewModel by activityViewModels()
+    private lateinit var adapter: ListDeliveryAdapter
+    private var currentFilter: OrderStatus? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentDeliveryBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecycler()
+        setupFilterClicks()
+        ordersVM.delivery.observe(viewLifecycleOwner) { applyFilterAndShow(it) }
+    }
+
+    private fun setupRecycler() {
+        adapter = ListDeliveryAdapter(mutableListOf())
+        binding.recyclerViewDelirey.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewDelirey.adapter = adapter
+        binding.recyclerViewDelirey.setHasFixedSize(true)
+    }
+
+    private fun setupFilterClicks() = with(binding) {
+        tvAccepted.setOnClickListener {
+            currentFilter = OrderStatus.ACCEPTED
+            showToast("Accepted")
+            ordersVM.delivery.value?.let { applyFilterAndShow(it) }
+        }
+        tvDelived.setOnClickListener {
+            currentFilter = OrderStatus.DELIVERED
+            showToast("Delivered")
+            ordersVM.delivery.value?.let { applyFilterAndShow(it) }
+        }
+        tvDeliveryFailed.setOnClickListener {
+            currentFilter = OrderStatus.DELIVERY_FAILED
+            showToast("Delivery Failed")
+            ordersVM.delivery.value?.let { applyFilterAndShow(it) }
+        }
+        tvRejected.setOnClickListener {
+            currentFilter = OrderStatus.REJECTED
+            showToast("Delivery Rejected")
+            ordersVM.delivery.value?.let { applyFilterAndShow(it) }
+        }
+        // bấm vào tiêu đề để xóa filter
+        tvDelivery.setOnClickListener {
+            currentFilter = null
+            showToast("All")
+            ordersVM.delivery.value?.let { applyFilterAndShow(it) }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_delivery, container, false)
+    private fun applyFilterAndShow(all: List<OrderListSource.OrderSimple>) {
+        val filtered = currentFilter?.let { st -> all.filter { it.status == st } } ?: all
+        adapter.submitList(filtered)
+        binding.emptyView.isVisible = filtered.isEmpty()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment DeliveryFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DeliveryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

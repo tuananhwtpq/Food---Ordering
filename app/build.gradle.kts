@@ -70,6 +70,7 @@ dependencies {
 
     // 6. Dependency Injection (Hilt)
     implementation(libs.hilt.android)
+    implementation("androidx.compose.ui:ui-graphics-android:1.6.7")
     //implementation(libs.activity)
     kapt(libs.hilt.compiler)
 

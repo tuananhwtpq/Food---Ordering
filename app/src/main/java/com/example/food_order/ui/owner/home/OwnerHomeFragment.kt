@@ -1,48 +1,53 @@
 package com.example.food_order.ui.owner.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.food_order.databinding.FragmentOwnerHomeBinding
+import com.example.food_order.ui.orders.OrdersSharedViewModel
 import com.example.food_order.R
+import com.example.food_order.ui.owner.adapter.OwnerOrdersAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-
-
-/**
- * A simple [Fragment] subclass.
- * Use the [OwnerHomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class OwnerHomeFragment : Fragment() {
 
+    private var _binding: FragmentOwnerHomeBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val ordersVM: OrdersSharedViewModel by activityViewModels()
+    private lateinit var adapter: OwnerOrdersAdapter
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentOwnerHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_owner_home, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecycler()
+
+        ordersVM.pending.observe(viewLifecycleOwner) { list ->
+            adapter.submitList(list)
+            binding.tvListOrderPending.text = "Danh sách đơn hàng chờ: (${list.size})"
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment OwnerHomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) {}
+    private fun setupRecycler() {
+        adapter = OwnerOrdersAdapter(
+            data = mutableListOf(),
+            onAccept = { ordersVM.accept(it) },
+            onReject = { ordersVM.reject(it) }
+        )
+        binding.rvListOrderPending.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvListOrderPending.adapter = adapter
+        binding.rvListOrderPending.setHasFixedSize(true)
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
