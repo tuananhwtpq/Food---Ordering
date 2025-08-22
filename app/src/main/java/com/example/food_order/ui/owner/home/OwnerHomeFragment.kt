@@ -1,48 +1,57 @@
 package com.example.food_order.ui.owner.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.food_order.R
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.food_order.data.demo.OrderDemoStore
+import com.example.food_order.data.repository.OrderListSource.OrderStatus
+import com.example.food_order.databinding.FragmentOwnerHomeBinding
 
-// TODO: Rename parameter arguments, choose names that match
-
-
-/**
- * A simple [Fragment] subclass.
- * Use the [OwnerHomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class OwnerHomeFragment : Fragment() {
 
+    private var _binding: FragmentOwnerHomeBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private lateinit var adapter: OwnerOrderAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_owner_home, container, false)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentOwnerHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment OwnerHomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) {}
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        adapter = OwnerOrderAdapter(
+            onAccept = {
+                OrderDemoStore.accept(it.id)
+                Toast.makeText(requireContext(), "Đã chấp nhận đơn #${it.id}", Toast.LENGTH_SHORT).show()
+            },
+            onReject = {
+                OrderDemoStore.reject(it.id)
+                Toast.makeText(requireContext(), "Đã từ chối đơn #${it.id}", Toast.LENGTH_SHORT).show()
+            }
+        )
+
+        binding.rvListOrderPending.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvListOrderPending.adapter = adapter
+
+        // Chỉ show đơn đang chờ duyệt trên Home
+        OrderDemoStore.orders.observe(viewLifecycleOwner, Observer { list ->
+            val pending = (list ?: mutableListOf()).filter { it.status == OrderStatus.PENDING_ACCEPTANCE }
+            adapter.submitList(pending)
+        })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

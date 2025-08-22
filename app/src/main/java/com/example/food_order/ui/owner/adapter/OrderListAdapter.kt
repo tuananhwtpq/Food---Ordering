@@ -1,93 +1,73 @@
 package com.example.food_order.ui.owner.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.food_order.R
+import com.example.food_order.data.repository.OrderListSource
+import com.example.food_order.databinding.CustomerListOrderBinding
+import com.example.food_order.databinding.ItemOrderBinding
 import java.text.NumberFormat
 import java.util.Locale
 
-data class FoodQty(val name: String, val qty: Int)
+class OrderListAdapter(
+    private var orders: List<OrderListSource.OrderSimple>,
+    private val onAccept: (OrderListSource.OrderSimple) -> Unit,
+    private val onReject: (OrderListSource.OrderSimple) -> Unit
+) : RecyclerView.Adapter<OrderListAdapter.OrderViewHolder>() {
 
-data class OrderSimple(
-    val id: String,
-    val status: String,          // "PENDING", "ACCEPTED", ...
-    val customer: String?,       // có thể null
-    val address: String?,
-    val note: String?,
-    val total: Long,             // VND
-    val timeText: String,        // "HH:mm" hoặc "dd/MM HH:mm"
-    val items: List<FoodQty>
-)
+    // Tối ưu cho nested RecyclerView
+    private val sharedPool = RecyclerView.RecycledViewPool()
 
-class OrderSimpleAdapter(
-    private val onAccept: (OrderSimple) -> Unit,
-    private val onReject: (OrderSimple) -> Unit
-) : RecyclerView.Adapter<OrderSimpleAdapter.VH>() {
+    inner class OrderViewHolder(val binding: ItemOrderBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-    private val data = mutableListOf<OrderSimple>()
+        fun bind(order: OrderListSource.OrderSimple) = with(binding) {
+            // ====== Bind thông tin đơn ======
+            tvOrderId.text = "Đơn #${order.id?.take(6) ?: "-"}"
+            tvStatus.text  = order.status.toString()
+            tvCustomer.text = "Khách: ${order.customer ?: "-"}"
+            tvAddress.text  = "Địa chỉ: ${order.address ?: "-"}"
+            tvNote.text     = if (order.note.isNullOrBlank()) "Ghi chú: -" else "Ghi chú: ${order.note}"
 
-    fun submit(list: List<OrderSimple>) {
-        data.clear()
-        data.addAll(list)
+            val vnd = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
+            tvTotal.text = vnd.format(order.total ?: 0L)
+            tvTime.text  = order.timeText ?: "" // hoặc format lại thời gian nếu cần
+
+            // ====== RecyclerView con: danh sách món ======
+            rcvItemsRight.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = OrderLineItemAdapter(order.items ?: emptyList())
+                setRecycledViewPool(sharedPool)
+                isNestedScrollingEnabled = false
+            }
+
+            // ====== Nút hành động ======
+            btnAccept.setOnClickListener { onAccept(order) }
+            btnReject.setOnClickListener { onReject(order) }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
+        val binding = ItemOrderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return OrderViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
+        holder.bind(orders[position])
+    }
+
+    override fun getItemCount(): Int = orders.size
+
+    fun submitList(newOrders: List<OrderListSource.OrderSimple>) {
+        orders = newOrders
         notifyDataSetChanged()
     }
-
-    fun current(): List<OrderSimple> = data
-
-    inner class VH(v: View) : RecyclerView.ViewHolder(v) {
-        private val tvOrderId: TextView = v.findViewById(R.id.tvOrderId)
-        private val tvStatus: TextView = v.findViewById(R.id.tvStatus)
-        private val tvCustomer: TextView = v.findViewById(R.id.tvCustomer)
-        private val tvAddress: TextView = v.findViewById(R.id.tvAddress)
-        private val tvNote: TextView = v.findViewById(R.id.tvNote)
-        private val tvTotal: TextView = v.findViewById(R.id.tvTotal)
-        private val tvTime: TextView = v.findViewById(R.id.tvTime)
-        private val tvItemsRight: TextView = v.findViewById(R.id.tvItemsRight)
-        private val btnAccept: Button = v.findViewById(R.id.btnAccept)
-        private val btnReject: Button = v.findViewById(R.id.btnReject)
-
-        fun bind(o: OrderSimple) {
-            tvOrderId.text = "Đơn #${o.id.takeLast(6)}"
-            tvStatus.text = o.status
-
-            bindOptional(tvCustomer, o.customer?.let { "Khách: $it" })
-            bindOptional(tvAddress, o.address?.let { "Địa chỉ: $it" })
-            bindOptional(tvNote, o.note?.let { "Ghi chú: $it" })
-
-            tvTotal.text = o.total.toVnd()
-            tvTime.text = o.timeText
-
-            // Cột phải: liệt kê tối đa 4 dòng "SL × Tên món" cho gọn
-            tvItemsRight.text = o.items.take(4).joinToString("\n") { "${it.qty}× ${it.name}" }
-
-            btnAccept.setOnClickListener { onAccept(o) }
-            btnReject.setOnClickListener { onReject(o) }
-        }
-
-        private fun bindOptional(tv: TextView, value: String?) {
-            if (value.isNullOrBlank()) {
-                tv.visibility = View.GONE
-            } else {
-                tv.text = value
-                tv.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_order, parent, false)
-        return VH(v)
-    }
-
-    override fun onBindViewHolder(holder: VH, position: Int) = holder.bind(data[position])
-
-    override fun getItemCount(): Int = data.size
 }
 
-private fun Long.toVnd(): String =
-    NumberFormat.getCurrencyInstance(Locale("vi", "VN")).format(this)
+/**
+ * Adapter hiển thị các món trong 1 đơn (RecyclerView con).
+ * Dùng layout: customer_list_order.xml (CustomerListOrderBinding)
+ * Cần các field: name, quantity trên OrderListSource.OrderItemSimple
+ */
+

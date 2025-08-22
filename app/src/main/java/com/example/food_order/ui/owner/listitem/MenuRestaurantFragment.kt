@@ -16,7 +16,7 @@ import com.example.food_order.data.repository.MenuItem
 import com.example.food_order.data.repository.MenuRepository
 import com.example.food_order.data.repository.FakeMenuRepository.MenuRepositoryProvider
 import com.example.food_order.databinding.FragmentMenuRestaurantBinding
-import com.example.food_order.ui.adapter.MenuAdapter
+import com.example.food_order.ui.owner.adapter.MenuAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.launch
 

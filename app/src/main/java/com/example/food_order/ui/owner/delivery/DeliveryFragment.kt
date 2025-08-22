@@ -1,60 +1,96 @@
 package com.example.food_order.ui.owner.delivery
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.food_order.R
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.food_order.data.demo.OrderDemoStore
+import com.example.food_order.data.repository.OrderListSource.OrderSimple
+import com.example.food_order.data.repository.OrderListSource.OrderStatus
+import com.example.food_order.databinding.FragmentDeliveryBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [DeliveryFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class DeliveryFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentDeliveryBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var adapter: ListDeliveryAdapter
+
+    // Bộ lọc hiện tại
+    private var currentFilter: (OrderSimple) -> Boolean = { it.status in IN_PROGRESS }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_delivery, container, false)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentDeliveryBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        adapter = ListDeliveryAdapter()
+        binding.recyclerViewDelirey.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewDelirey.adapter = adapter
+
+        // Lắng nghe dữ liệu demo chung
+        OrderDemoStore.orders.observe(viewLifecycleOwner, Observer { list ->
+            applyFilter(list ?: emptyList())
+        })
+
+        // Click 4 nút filter ở card trên cùng
+        binding.tvAccepted.setOnClickListener {
+            setFilter(IN_PROGRESS)
+            setSelected(binding.tvAccepted)
+        }
+        binding.tvRejected.setOnClickListener {
+            setFilter(setOf(OrderStatus.REJECTED, OrderStatus.CANCELLED))
+            setSelected(binding.tvRejected)
+        }
+        binding.tvDelived.setOnClickListener {
+            setFilter(setOf(OrderStatus.DELIVERED))
+            setSelected(binding.tvDelived)
+        }
+        binding.tvDeliveryFailed.setOnClickListener {
+            setFilter(setOf(OrderStatus.DELIVERY_FAILED))
+            setSelected(binding.tvDeliveryFailed)
+        }
+
+        // mặc định: In-progress
+        setSelected(binding.tvAccepted)
+    }
+
+    private fun setFilter(statuses: Set<OrderStatus>) {
+        currentFilter = { it.status in statuses }
+        OrderDemoStore.orders.value?.let { applyFilter(it) }
+    }
+
+    private fun applyFilter(list: List<OrderSimple>) {
+        adapter.submitList(list.filter(currentFilter))
+    }
+
+    private fun setSelected(selected: View) {
+        // tô trạng thái chọn (tuỳ ý, ở đây chỉ set isSelected để bạn style bằng selector)
+        listOf(binding.tvAccepted, binding.tvRejected, binding.tvDelived, binding.tvDeliveryFailed)
+            .forEach { it.isSelected = (it.id == selected.id) }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment DeliveryFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DeliveryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        // Nhóm "đang xử lý/đang giao"
+        private val IN_PROGRESS = setOf(
+            OrderStatus.ACCEPTED,
+            OrderStatus.PREPARING,
+            OrderStatus.READY,
+            OrderStatus.ASSIGNED,
+            OrderStatus.OUT_FOR_DELIVERY
+        )
     }
 }

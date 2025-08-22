@@ -12,17 +12,24 @@
     android:layout_marginBottom="8dp">
 
     <!-- Cột phải: Món × SL -->
-    <TextView
-        android:id="@+id/tvItemsRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="viewEnd"
-        android:paddingStart="8dp"
+<!--    <TextView-->
+<!--        android:id="@+id/tvItemsRight"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textAlignment="viewEnd"-->
+<!--        android:paddingStart="8dp"-->
+<!--        app:layout_constrainedWidth="true"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        tools:text="2× Phở bò\n1× Bún chả\n1× Trà chanh" />-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvItemsRight"
+        android:layout_width="187dp"
+        android:layout_height="78dp"
         app:layout_constrainedWidth="true"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="2× Phở bò\n1× Bún chả\n1× Trà chanh" />
-
+        app:layout_constraintTop_toBottomOf="@id/tvStatus"
+        tools:listitem="@layout/customer_list_order" />
     <!-- Dòng 1: Mã đơn + Trạng thái -->
     <TextView
         android:id="@+id/tvOrderId"
@@ -33,16 +40,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvStatus"
-        tools:text="Đơn #A1B2C3" />
+        tools:text="Đơn #A1B2C3"
+        />
 
     <TextView
         android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAllCaps="true"
-        android:layout_marginEnd="8dp"
         app:layout_constraintBaseline_toBaselineOf="@id/tvOrderId"
-        app:layout_constraintEnd_toStartOf="@id/tvItemsRight"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="PENDING" />
 
     <!-- Dòng 2: Khách -->
@@ -53,7 +60,7 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintTop_toBottomOf="@id/tvOrderId"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvItemsRight"
+        app:layout_constraintEnd_toStartOf="@id/rcvItemsRight"
         tools:text="Khách: Nguyễn Văn A" />
 
     <!-- Dòng 3: Địa chỉ -->
@@ -64,7 +71,7 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintTop_toBottomOf="@id/tvCustomer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvItemsRight"
+        app:layout_constraintEnd_toStartOf="@id/rcvItemsRight"
         tools:text="Địa chỉ: 12 Nguyễn Trãi, Hà Nội" />
 
     <!-- Dòng 4: Ghi chú -->
@@ -75,7 +82,7 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintTop_toBottomOf="@id/tvAddress"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvItemsRight"
+        app:layout_constraintEnd_toStartOf="@id/rcvItemsRight"
         tools:text="Ghi chú: Ít cay" />
 
     <!-- Dòng 5: Tổng + Thời gian -->
@@ -97,7 +104,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         app:layout_constraintBaseline_toBaselineOf="@id/tvTotal"
-        app:layout_constraintEnd_toStartOf="@id/tvItemsRight"
+        app:layout_constraintEnd_toStartOf="@id/rcvItemsRight"
         tools:text="17:20" />
 
     <!-- Barrier: phải có width/height -->
@@ -106,7 +113,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="tvTotal,tvItemsRight" />
+        app:constraint_referenced_ids="tvTotal,rcvItemsRight" />
 
     <!-- Nút hành động -->
     <Button
