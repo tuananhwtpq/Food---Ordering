@@ -43,7 +43,7 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>() {
     override fun initListener() {
         super.initListener()
 
-        binding.loginText.setOnClickListener {
+        binding.signupText.setOnClickListener {
             onBack()
         }
 

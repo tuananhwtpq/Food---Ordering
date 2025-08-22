@@ -47,11 +47,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
         binding.signupText.setOnClickListener {
 
-            val bundle = Bundle().apply {
-                putString("userRole", userRole)
-            }
-
-            safeNavigate(R.id.action_loginFragment_to_signupFragment, bundle)
+            safeNavigate(R.id.action_loginFragment_to_signupFragment)
         }
 
         binding.loginButton.setOnClickListener {

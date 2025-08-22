@@ -27,21 +27,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         val navController = navHostFragment.navController
         val navGraph = navController.navInflater.inflate(R.navigation.main_nav_graph)
         if (userRole == "customer") {
-            // Đặt điểm xuất phát cho customer
             navGraph.setStartDestination(R.id.customerHomeFragment)
             binding.bottomNavigation.inflateMenu(R.menu.customer_bottom_nav)
         } else { // userRole == "owner"
 
-            // Đặt điểm xuất phát cho owner
-            navGraph.setStartDestination(R.id.ownerHomeFragment) // Ví dụ
-
-
-            // Load menu của owner
+            navGraph.setStartDestination(R.id.ownerHomeFragment)
 
             binding.bottomNavigation.inflateMenu(R.menu.owner_bottom_nav)
         }
         navController.graph = navGraph
-        // Kết nối BottomNavigationView với NavController
         binding.bottomNavigation.setupWithNavController(navController)
 
     }
