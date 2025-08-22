@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.*
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.example.food_order.R
+import com.example.food_order.ui.owner.adapter.MenuAdapter
 
 class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsheet_menu_item_details) {
 
@@ -118,6 +119,7 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
 
         btnDelete.setOnClickListener {
             id?.let { onDelete?.invoke(it) }
+            dismiss()
             // tuỳ ý: dismiss sau khi fragment xử lý xong
         }
 
@@ -130,4 +132,8 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
         btnSave.visibility = if (editing) View.VISIBLE else View.GONE
         btnEdit.visibility = if (editing) View.GONE else View.VISIBLE
     }
+}
+fun MenuAdapter.submitList(items: List<MenuItem>) {
+    // MenuAdapter hiện đang có hàm `submit(...)`
+    this.submit(items)
 }

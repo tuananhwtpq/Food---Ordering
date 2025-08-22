@@ -1,5 +1,6 @@
 package com.example.food_order.data.repository
 
+import com.example.food_order.data.repository.FakeMenuRepository.memory
 import java.text.SimpleDateFormat
 import kotlin.math.absoluteValue
 import java.time.OffsetDateTime
@@ -60,9 +61,15 @@ object FakeMenuRepository : MenuRepository {
             createdAt = nowIso(-2)
         )
     )
+   suspend fun newItemMenu(item: MenuItem): MenuItem {
+        memory.add(memory.size+1, item)
+
+        return item
+    }
 
     override suspend fun getMenu(restaurantId: String): List<MenuItem> =
         memory.filter { it.restaurantId == restaurantId }
+
 
     override suspend fun update(item: MenuItem): MenuItem {
         val idx = item.id?.let { id -> memory.indexOfFirst { it.id == id } } ?: -1
