@@ -6,9 +6,9 @@ import com.example.food_order.data.api.MenuApiService
 import com.example.food_order.data.model.request.MenuRequest
 import com.example.food_order.data.repository.AppResult
 import com.example.food_order.data.repository.IMenuRepository
+import com.example.food_order.data.repository.MenuItem
 import com.example.food_order.data.repository.MenuRepository
 import com.example.food_order.di.RetrofitInstance
-import com.example_food_order.data.repository.MenuItem
 import kotlinx.coroutines.launch
 
 class MenuRestaurantViewModel(

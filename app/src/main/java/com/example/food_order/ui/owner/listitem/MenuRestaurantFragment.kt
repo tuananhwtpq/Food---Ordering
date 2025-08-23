@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.food_order.R
 import com.example.food_order.manager.SessionManager
 import com.example.food_order.ui.owner.adapter.MenuAdapter
-import com.example_food_order.data.repository.MenuItem
+import com.example.food_order.data.repository.MenuItem
 import com.google.android.material.snackbar.Snackbar
 import com.example.food_order.utils.extension.showToast
 
@@ -48,6 +48,7 @@ class MenuRestaurantFragment : Fragment(R.layout.fragment_menu_restaurant) {
         rv.adapter = adapter
 
         viewModel.items.observe(viewLifecycleOwner) { list ->
+
             adapter.submit(list) // hoặc adapter.submitList(list) nếu adapter bạn có hàm đó
         }
         viewModel.error.observe(viewLifecycleOwner) { msg ->
@@ -55,9 +56,24 @@ class MenuRestaurantFragment : Fragment(R.layout.fragment_menu_restaurant) {
         }
         val restaurantId = arguments?.getString("restaurantId")
         Log.d("MenuVM", "restaurantId=$restaurantId")
+        view.findViewById<View>(R.id.fabAdd)?.setOnClickListener {
+            val sheet = MenuItemBottomSheet.newForCreate(restaurantId = viewModelRestaurantId())
+            sheet.onCreate = { req ->
+                viewModel.create(req) {
+                    // đóng sheet sau khi tạo xong
+                    sheet.dismiss()
+                }
+            }
+            sheet.show(childFragmentManager, "menu_item_create")
+        }
         viewModel.loadMenu()
     }
+    private fun viewModelRestaurantId(): String {
 
+        return arguments?.getString("restaurantId")
+            ?: com.example.food_order.manager.SessionManager(requireContext()).fetchSelectedRestaurantId()
+            ?: ""
+    }
     private fun onItemClick(item: MenuItem) {
         val sheet = MenuItemBottomSheet.newInstance(item)
         sheet.onSave = {

@@ -14,6 +14,7 @@ data class MenuResponse(
 // Bọc theo JSON của BE: { "data": [...] } và { "data": { ... } }
 data class MenuListResponse(
     val foodItems: List<MenuResponse>
+
 )
 data class MenuItemResponse(
     val data: MenuResponse

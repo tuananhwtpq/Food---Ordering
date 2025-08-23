@@ -3,7 +3,6 @@ package com.example.food_order.data.repository
 import com.example.food_order.data.api.MenuApiService
 import com.example.food_order.data.model.request.MenuRequest
 import com.example.food_order.data.model.response.MenuResponse
-import com.example_food_order.data.repository.MenuItem
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -11,6 +10,18 @@ sealed class AppResult<out T> {
     data class Success<T>(val data: T): AppResult<T>()
     data class Failure(val code: Int?, val message: String?): AppResult<Nothing>()
 }
+
+/** UI model đang dùng trong adapter của bạn (MenuDataSource.kt) */
+data class MenuItem(
+    val id: String?,
+    val restaurantId: String,
+    val name: String,
+    val description: String?,
+    val price: Double,
+    val imageUrl: String?,
+    val arModelUrl: String?,
+    val createdAt: String?
+)
 
 interface IMenuRepository {
     suspend fun fetchMenu(restaurantId: String): AppResult<List<MenuItem>>
@@ -27,7 +38,7 @@ class MenuRepository(
         return try {
             val resp = api.getMenu(restaurantId)
             if (resp.isSuccessful) {
-                val list = resp.body()?.foodItems.orEmpty().map { it.toDomain() } // <-- đổi sang foodItems
+                val list = resp.body()?.foodItems.orEmpty().map { it.toDomain() } // <-- đọc foodItems
                 AppResult.Success(list)
             } else {
                 AppResult.Failure(resp.code(), resp.errorBody()?.string())
@@ -43,8 +54,7 @@ class MenuRepository(
         return try {
             val resp = api.createMenuItem(restaurantId, body)
             if (resp.isSuccessful) {
-                // BE trả {id, message} -> FE chỉ cần refresh list, không cần parse sâu
-                AppResult.Success(Unit)
+                AppResult.Success(Unit) // chỉ cần reload list
             } else {
                 AppResult.Failure(resp.code(), resp.errorBody()?.string())
             }
@@ -80,7 +90,7 @@ class MenuRepository(
     }
 }
 
-// map DTO -> UI model bạn đang dùng trong adapter
+/** Map DTO -> UI model bạn đang dùng */
 private fun MenuResponse.toDomain() = MenuItem(
     id = this.id,
     restaurantId = this.restaurantId,

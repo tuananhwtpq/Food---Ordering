@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.food_order.R
 import com.example.food_order.databinding.MenuItemBinding
-import com.example_food_order.data.repository.MenuItem
+import com.example.food_order.data.repository.MenuItem
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -31,8 +31,8 @@ class MenuAdapter(
             }
 
             // Giá VNĐ
-            val vn = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
-            tvPrice.text = vn.format(item.price)
+            val us = NumberFormat.getCurrencyInstance(Locale("vi", "US"))
+            tvPrice.text = us.format(item.price)
 
             // Ảnh
             Glide.with(root.context)
@@ -56,7 +56,6 @@ class MenuAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    /** Đổi nguồn dữ liệu (fake → API) chỉ cần gọi submit(list) */
     fun submit(newItems: List<MenuItem>) {
         items = newItems
         notifyDataSetChanged()
