@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.food_order.data.repository.OrderListSource
 import com.example.food_order.data.repository.OrderListSource.OrderStatus
 import com.example.food_order.databinding.FragmentDeliveryBinding
+import com.example.food_order.ui.orders.OrdersSharedVMFactory
 import com.example.food_order.ui.orders.OrdersSharedViewModel
 import com.example.food_order.ui.owner.adapter.ListDeliveryAdapter
 import com.example.food_order.utils.extension.showToast
@@ -20,7 +21,9 @@ class DeliveryFragment : Fragment() {
     private var _binding: FragmentDeliveryBinding? = null
     private val binding get() = _binding!!
 
-    private val ordersVM: OrdersSharedViewModel by activityViewModels()
+    private val ordersVM: OrdersSharedViewModel by activityViewModels {
+        OrdersSharedVMFactory(requireContext().applicationContext)
+    }
     private lateinit var adapter: ListDeliveryAdapter
     private var currentFilter: OrderStatus? = null
 
@@ -33,7 +36,10 @@ class DeliveryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecycler()
         setupFilterClicks()
-        ordersVM.delivery.observe(viewLifecycleOwner) { applyFilterAndShow(it) }
+        ordersVM.delivery.observe(viewLifecycleOwner) { all ->
+            applyFilterAndShow(all)
+        }
+        ordersVM.refresh()
     }
 
     private fun setupRecycler() {

@@ -10,18 +10,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.food_order.databinding.FragmentOwnerHomeBinding
 import com.example.food_order.ui.orders.OrdersSharedViewModel
 import com.example.food_order.R
+import com.example.food_order.ui.orders.OrdersSharedVMFactory
 import com.example.food_order.ui.owner.adapter.OwnerOrdersAdapter
 
 class OwnerHomeFragment : Fragment() {
 
+    private val ordersVM: OrdersSharedViewModel by activityViewModels {
+        OrdersSharedVMFactory(requireContext().applicationContext)
+    }
+
     private var _binding: FragmentOwnerHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val ordersVM: OrdersSharedViewModel by activityViewModels()
     private lateinit var adapter: OwnerOrdersAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentOwnerHomeBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -30,9 +35,9 @@ class OwnerHomeFragment : Fragment() {
         setupRecycler()
 
         ordersVM.pending.observe(viewLifecycleOwner) { list ->
-            adapter.submitList(list)
-            binding.tvListOrderPending.text = "Danh sách đơn hàng chờ: (${list.size})"
+            adapter.submitList(list)   // adapter hiện có đã hỗ trợ submitList
         }
+        ordersVM.refresh()
     }
 
     private fun setupRecycler() {
