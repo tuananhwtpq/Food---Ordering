@@ -1,90 +1,140 @@
-// MenuRestaurantFragment.kt (bản rút gọn đã sửa)
 package com.example.food_order.ui.owner.listitem
 
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.TextView
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.food_order.R
+import com.example.food_order.data.model.request.MenuRequest
+import com.example.food_order.data.repository.MenuItem
 import com.example.food_order.manager.SessionManager
 import com.example.food_order.ui.owner.adapter.MenuAdapter
-import com.example.food_order.data.repository.MenuItem
-import com.google.android.material.snackbar.Snackbar
 import com.example.food_order.utils.extension.showToast
+import com.google.android.material.snackbar.Snackbar
 
 class MenuRestaurantFragment : Fragment(R.layout.fragment_menu_restaurant) {
 
     private lateinit var viewModel: MenuRestaurantViewModel
-
     private lateinit var adapter: MenuAdapter
 
+    // giữ bản đầy đủ để filter cục bộ
+    private var fullList: List<MenuItem> = emptyList()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // 1) Lấy id từ args -> nếu rỗng thì lấy từ Session
+        super.onViewCreated(view, savedInstanceState)
+
+        // 1) Resolve restaurantId
         val resolvedId = arguments?.getString("restaurantId")?.takeIf { it.isNotBlank() }
             ?: SessionManager(requireContext()).fetchSelectedRestaurantId()
 
-// 2) Log để bạn nhìn ở Logcat tag = MenuVM
         Log.d("MenuVM", "resolvedId=$resolvedId")
-
-// 3) Nếu chưa có id -> chặn lại để tránh loadMenu với id rỗng
         if (resolvedId.isNullOrBlank()) {
             showToast("Bạn chưa chọn nhà hàng. Hãy đăng nhập Owner và chọn 1 nhà hàng.")
             return
         }
 
-// 4) Tạo ViewModel bằng factory với id hợp lệ
+        // 2) ViewModel
         val factory = MenuRestaurantViewModel.provideFactory(requireContext(), resolvedId)
         viewModel = ViewModelProvider(this, factory)[MenuRestaurantViewModel::class.java]
 
-        super.onViewCreated(view, savedInstanceState)
-
+        // 3) RecyclerView + Adapter
         val rv = view.findViewById<RecyclerView>(R.id.rvMenu)
         adapter = MenuAdapter(onItemClick = ::onItemClick)
         rv.layoutManager = LinearLayoutManager(requireContext())
         rv.adapter = adapter
 
-        viewModel.items.observe(viewLifecycleOwner) { list ->
+        // 4) Search EditText (LẤY BÊN TRONG onViewCreated)
+        val etSearch = view.findViewById<EditText>(R.id.etSearch)
 
-            adapter.submit(list) // hoặc adapter.submitList(list) nếu adapter bạn có hàm đó
+        // Observe danh sách -> lưu fullList rồi áp filter theo ô đang gõ
+        viewModel.items.observe(viewLifecycleOwner) { list ->
+            fullList = list
+            val q = etSearch.text?.toString().orEmpty()
+            adapter.submit(filter(fullList, q))
         }
+
         viewModel.error.observe(viewLifecycleOwner) { msg ->
             if (!msg.isNullOrBlank()) Snackbar.make(view, msg, Snackbar.LENGTH_LONG).show()
         }
-        val restaurantId = arguments?.getString("restaurantId")
-        Log.d("MenuVM", "restaurantId=$restaurantId")
+
+        // 5) Nút tạo mới
         view.findViewById<View>(R.id.fabAdd)?.setOnClickListener {
             val sheet = MenuItemBottomSheet.newForCreate(restaurantId = viewModelRestaurantId())
             sheet.onCreate = { req ->
-                viewModel.create(req) {
-                    // đóng sheet sau khi tạo xong
-                    sheet.dismiss()
-                }
+                viewModel.create(req) { sheet.dismiss() }
             }
             sheet.show(childFragmentManager, "menu_item_create")
         }
+
+        // 6) Search: gõ tới đâu lọc tới đó
+        etSearch.doAfterTextChanged { s ->
+            val q = s?.toString().orEmpty()
+            adapter.submit(filter(fullList, q))
+        }
+
+        // 7) Enter/Search -> ẩn bàn phím
+        etSearch.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, event ->
+            val isIme = actionId == EditorInfo.IME_ACTION_SEARCH ||
+                    actionId == EditorInfo.IME_ACTION_DONE  ||
+                    actionId == EditorInfo.IME_ACTION_GO
+            val isEnter = event != null &&
+                    event.action == KeyEvent.ACTION_DOWN &&
+                    event.keyCode == KeyEvent.KEYCODE_ENTER
+            if (isIme || isEnter) {
+                hideKeyboard(etSearch)
+                true
+            } else false
+        })
+
+        // 8) Load data
         viewModel.loadMenu()
     }
-    private fun viewModelRestaurantId(): String {
 
+    private fun viewModelRestaurantId(): String {
         return arguments?.getString("restaurantId")
-            ?: com.example.food_order.manager.SessionManager(requireContext()).fetchSelectedRestaurantId()
+            ?: SessionManager(requireContext()).fetchSelectedRestaurantId()
             ?: ""
     }
+
+    private fun filter(list: List<MenuItem>, q: String): List<MenuItem> {
+        if (q.isBlank()) return list
+        return list.filter { item ->
+            item.name.contains(q, ignoreCase = true) ||
+                    (item.description?.contains(q, ignoreCase = true) == true)
+        }
+    }
+
+    private fun hideKeyboard(v: View) {
+        val imm = requireContext()
+            .getSystemService(android.content.Context.INPUT_METHOD_SERVICE)
+                as android.view.inputmethod.InputMethodManager
+        imm.hideSoftInputFromWindow(v.windowToken, 0)
+    }
+
     private fun onItemClick(item: MenuItem) {
         val sheet = MenuItemBottomSheet.newInstance(item)
-        sheet.onSave = {
-            val req = com.example.food_order.data.model.request.MenuRequest(
-                name = it.name,
-                description = it.description,
-                price = it.price,
-                imageUrl = it.imageUrl,
-                restaurantId = it.restaurantId
+        sheet.onSave = { updated ->
+            val req = MenuRequest(
+                name = updated.name,
+                description = updated.description,
+                price = updated.price,
+                imageUrl = updated.imageUrl,
+                restaurantId = updated.restaurantId,
+                arModelUrl = null
             )
-            if (it.id == null) viewModel.create(req) else viewModel.update(it.id, req)
+            if (updated.id == null) {
+                viewModel.create(req)
+            } else {
+                viewModel.update(updated.id, req)
+            }
         }
         sheet.onDelete = { id -> viewModel.delete(id) }
         sheet.show(childFragmentManager, "menu_item_details")
