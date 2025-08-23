@@ -2,6 +2,7 @@ package com.example.food_order.ui.auth.login
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -130,12 +131,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                 val res = restaurantApi.getMyRestaurants()
                 if (res.isSuccessful) {
                     val list = res.body()?.data.orEmpty()
+                    session.saveSelectedRestaurantId(list.first().id)
+                    Log.e("OwnerLogin", "getMyRestaurants failed: HTTP ${res.code()}, body=${res.errorBody()?.string()}")
+
                     when {
                         list.isEmpty() -> {
                             // Không có nhà hàng nào -> xoá selection để tránh null về sau
                             session.clearSelectedRestaurantId()
                             showToast("Tài khoản owner chưa có nhà hàng nào.")
-                            // TODO: nếu bạn có luồng 'Tạo nhà hàng', có thể safeNavigate tới đó thay vì vào Main
                             navigateToMain(role)
                         }
                         list.size == 1 -> {
