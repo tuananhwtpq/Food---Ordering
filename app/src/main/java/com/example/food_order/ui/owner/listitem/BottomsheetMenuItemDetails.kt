@@ -1,12 +1,12 @@
 package com.example.food_order.ui.owner.listitem
 
 import android.os.Bundle
-import com.example.food_order.data.repository.MenuItem
 import android.view.View
 import android.widget.*
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.example.food_order.R
 import com.example.food_order.ui.owner.adapter.MenuAdapter
+import com.example_food_order.data.repository.MenuItem
 
 class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsheet_menu_item_details) {
 

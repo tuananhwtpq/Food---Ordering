@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.food_order.R
-import com.example.food_order.data.repository.MenuItem // data class tự chứa trong MenuDataSource.kt
 import com.example.food_order.databinding.MenuItemBinding
+import com.example_food_order.data.repository.MenuItem
 import java.text.NumberFormat
 import java.util.Locale
 

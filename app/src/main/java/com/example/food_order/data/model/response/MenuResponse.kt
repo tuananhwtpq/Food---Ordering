@@ -6,7 +6,7 @@ data class MenuResponse(
     val restaurantId: String,
     val name: String,
     val description: String?,
-    val price: Double?,
+    val price: Double,
     val imageUrl: String?,
     val arModelUrl: String?,
     val createdAt: String?

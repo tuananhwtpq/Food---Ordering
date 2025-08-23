@@ -29,8 +29,8 @@ class MenuRestaurantViewModel(
             _loading.value = true
             _error.value = null
             when (val res = repo.fetchMenu(restaurantId)) {
-                is Result.Success -> _items.value = res.data
-                is Result.Failure -> _error.value = res.message ?: "Lỗi tải menu"
+                is AppResult.Success -> _items.value = res.data
+                is AppResult.Failure -> _error.value = res.message ?: "Lỗi tải menu"
             }
             _loading.value = false
         }
@@ -40,11 +40,11 @@ class MenuRestaurantViewModel(
         viewModelScope.launch {
             _loading.value = true
             when (val res = repo.create(restaurantId, body)) {
-                is Result.Success -> {
+                is AppResult.Success -> {
                     _items.value = _items.value.orEmpty() + res.data
                     onDone?.invoke()
                 }
-                is Result.Failure -> _error.value = res.message ?: "Tạo món thất bại"
+                is AppResult.Failure -> _error.value = res.message ?: "Tạo món thất bại"
             }
             _loading.value = false
         }
@@ -54,7 +54,7 @@ class MenuRestaurantViewModel(
         viewModelScope.launch {
             _loading.value = true
             when (val res = repo.update(restaurantId, itemId, body)) {
-                is Result.Success -> {
+                is AppResult.Success -> {
                     val current = _items.value.orEmpty().toMutableList()
                     val idx = current.indexOfFirst { it.id == itemId }
                     if (idx >= 0) {
@@ -63,7 +63,7 @@ class MenuRestaurantViewModel(
                     }
                     onDone?.invoke()
                 }
-                is Result.Failure -> _error.value = res.message ?: "Cập nhật thất bại"
+                is AppResult.Failure -> _error.value = res.message ?: "Cập nhật thất bại"
             }
             _loading.value = false
         }
@@ -73,11 +73,11 @@ class MenuRestaurantViewModel(
         viewModelScope.launch {
             _loading.value = true
             when (val res = repo.delete(restaurantId, itemId)) {
-                is Result.Success -> {
+                is AppResult.Success -> {
                     _items.value = _items.value.orEmpty().filterNot { it.id == itemId }
                     onDone?.invoke()
                 }
-                is Result.Failure -> _error.value = res.message ?: "Xóa thất bại"
+                is AppResult.Failure -> _error.value = res.message ?: "Xóa thất bại"
             }
             _loading.value = false
         }

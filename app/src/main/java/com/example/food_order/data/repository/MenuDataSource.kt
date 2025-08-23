@@ -8,7 +8,7 @@ data class MenuItem(
     val restaurantId: String,
     val name: String,
     val description: String? = null,
-    val price: Double?,
+    val price: Double,
     val imageUrl: String? = null,
     val arModelUrl: String? = null,
     val createdAt: String? = null
