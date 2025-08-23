@@ -11,6 +11,7 @@ import com.example.food_order.data.repository.MenuItem
 import java.text.NumberFormat
 import java.util.Locale
 
+
 class MenuAdapter(
     private var items: List<MenuItem> = emptyList(),
     private val onItemClick: (MenuItem) -> Unit

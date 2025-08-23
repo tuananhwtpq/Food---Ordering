@@ -7,6 +7,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.example.food_order.R
 import com.example.food_order.ui.owner.adapter.MenuAdapter
 import com.example.food_order.data.repository.MenuItem
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.example.food_order.data.model.request.MenuRequest
+import com.example.food_order.databinding.FragmentBottomsheetMenuItemDetailsBinding
 
 class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsheet_menu_item_details) {
 
@@ -96,6 +100,17 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
         val image = requireArguments().getString(ARG_IMAGE)
         val created = requireArguments().getString(ARG_CREATED)
 
+        val binding : FragmentBottomsheetMenuItemDetailsBinding = FragmentBottomsheetMenuItemDetailsBinding.bind(view)
+        if (image.isNullOrBlank()) {
+
+            binding.ivImageLarge.setImageResource(R.drawable.ic_image_placeholder)
+        } else {
+            Glide.with(requireContext())
+                .load(image)
+                .placeholder(R.drawable.ic_image_placeholder)
+                .error(R.drawable.ic_broken_image)
+                .into(binding.ivImageLarge)
+        }
         // bind
         etName.setText(name)
         etPrice.setText(if (price == 0.0) "" else price.toString())
@@ -144,7 +159,7 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
 
             if (isCreate) {
                 // tạo mới
-                val req = com.example.food_order.data.model.request.MenuRequest(
+                val req = MenuRequest(
                     restaurantId = restaurantId,
                     name = newName,
                     description = newDesc,
