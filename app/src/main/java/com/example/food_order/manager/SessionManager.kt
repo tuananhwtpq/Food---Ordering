@@ -10,20 +10,29 @@ class SessionManager(context: Context) {
     companion object {
         const val AUTH_TOKEN = "auth_token"
         const val USER_ROLE = "user_role"
+
+        // NEW:
+        const val SELECTED_RESTAURANT_ID = "selected_restaurant_id"
     }
 
     fun saveAuthDetails(token: String, role: String) {
-        val editor = prefs.edit()
-        editor.putString(AUTH_TOKEN, token)
-        editor.putString(USER_ROLE, role)
-        editor.apply()
+        prefs.edit().apply {
+            putString(AUTH_TOKEN, token)
+            putString(USER_ROLE, role)
+        }.apply()
     }
 
-    fun fetchAuthToken(): String? {
-        return prefs.getString(AUTH_TOKEN, null)
-    }
+    fun fetchAuthToken(): String? = prefs.getString(AUTH_TOKEN, null)
+    fun fetchUserRole(): String? = prefs.getString(USER_ROLE, null)
 
-    fun fetchUserRole(): String? {
-        return prefs.getString(USER_ROLE, null)
+    // NEW:
+    fun saveSelectedRestaurantId(id: String) {
+        prefs.edit().putString(SELECTED_RESTAURANT_ID, id).apply()
+    }
+    fun fetchSelectedRestaurantId(): String? =
+        prefs.getString(SELECTED_RESTAURANT_ID, null)
+
+    fun clearSelectedRestaurantId() {
+        prefs.edit().remove(SELECTED_RESTAURANT_ID).apply()
     }
 }

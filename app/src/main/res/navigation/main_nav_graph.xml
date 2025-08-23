@@ -66,6 +66,10 @@
         android:name="com.example.food_order.ui.owner.listitem.MenuRestaurantFragment"
         android:label="fragment_menu_restaurant"
         tools:layout="@layout/fragment_menu_restaurant" >
+        <argument
+            android:name="restaurantId"
+            app:argType="string"
+            android:defaultValue="" />
         <action
             android:id="@+id/action_menuRestaurantFragment_to_ownerHomeFragment"
             app:destination="@id/ownerHomeFragment" />
