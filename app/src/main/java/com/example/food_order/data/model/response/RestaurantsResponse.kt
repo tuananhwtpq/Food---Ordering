@@ -1,8 +1,9 @@
-package com.example.food_order.data.model.common
+package com.example.food_order.data.model.response
 
 import com.google.gson.annotations.SerializedName
 
-data class Restaurant(
+data class RestaurantsResponse(
+
     @SerializedName("id")
     val id: String,
 

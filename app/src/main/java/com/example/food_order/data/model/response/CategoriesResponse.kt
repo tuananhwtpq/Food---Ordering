@@ -1,8 +1,8 @@
-package com.example.food_order.data.model.common
+package com.example.food_order.data.model.response
 
 import com.google.gson.annotations.SerializedName
 
-data class Category(
+data class CategoriesResponse(
     @SerializedName("id")
     val id: String,
 
@@ -14,5 +14,4 @@ data class Category(
 
     @SerializedName("createdAt")
     val createdAt: String,
-
-    )
+)
