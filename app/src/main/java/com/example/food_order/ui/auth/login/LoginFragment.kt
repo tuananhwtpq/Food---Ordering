@@ -24,7 +24,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         val application = requireActivity().application as MainApplication
         LoginViewModelFactory(
             application.authRepository,
-            application.sessionManager
         )
     }
 
@@ -52,7 +51,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     }
 
                     is LoginUiState.Error -> {
-                        binding.passwordLayout.error = state.message
+                        //binding.passwordLayout.error = state.message
+                        binding.errorTxt.isVisible = true
+                        binding.errorTxt.text = state.message
                     }
 
                     else -> Unit
