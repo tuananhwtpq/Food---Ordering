@@ -1,15 +1,11 @@
-// MenuRepository.kt
 package com.example.food_order.data.repository
 
-
+import com.example.food_order.data.api.MenuApiService
 import com.example.food_order.data.model.request.MenuRequest
 import com.example.food_order.data.model.response.MenuResponse
 import com.example_food_order.data.repository.MenuItem
 import retrofit2.HttpException
 import java.io.IOException
-
-// UI model MenuItem đã có trong MenuDataSource.kt (cùng package), import để dùng
-// import com.example.food_order.data.repository.MenuItem  // (Android Studio sẽ tự add)
 
 sealed class AppResult<out T> {
     data class Success<T>(val data: T): AppResult<T>()
@@ -18,9 +14,9 @@ sealed class AppResult<out T> {
 
 interface IMenuRepository {
     suspend fun fetchMenu(restaurantId: String): AppResult<List<MenuItem>>
-    suspend fun create(restaurantId: String, body: MenuRequest): AppResult<MenuItem>
-    suspend fun update(restaurantId: String, itemId: String, body: MenuRequest): AppResult<MenuItem>
-    suspend fun delete(restaurantId: String, itemId: String): AppResult<Unit>
+    suspend fun create(restaurantId: String, body: MenuRequest): AppResult<Unit>
+    suspend fun update(itemId: String, updatedFields: Map<String, Any?>): AppResult<Unit>
+    suspend fun delete(itemId: String): AppResult<Unit>
 }
 
 class MenuRepository(
@@ -31,7 +27,7 @@ class MenuRepository(
         return try {
             val resp = api.getMenu(restaurantId)
             if (resp.isSuccessful) {
-                val list = resp.body().orEmpty().map { it.toDomain() }
+                val list = resp.body()?.foodItems.orEmpty().map { it.toDomain() } // <-- đổi sang foodItems
                 AppResult.Success(list)
             } else {
                 AppResult.Failure(resp.code(), resp.errorBody()?.string())
@@ -43,44 +39,11 @@ class MenuRepository(
         }
     }
 
-    override suspend fun create(restaurantId: String, body: MenuRequest): AppResult<MenuItem> {
+    override suspend fun create(restaurantId: String, body: MenuRequest): AppResult<Unit> {
         return try {
             val resp = api.createMenuItem(restaurantId, body)
             if (resp.isSuccessful) {
-                AppResult.Success(resp.body()!!.toDomain())
-            } else {
-                AppResult.Failure(resp.code(), resp.errorBody()?.string())
-            }
-        } catch (e: IOException) {
-            AppResult.Failure(null, e.message)
-        } catch (e: HttpException) {
-            AppResult.Failure(e.code(), e.message())
-        }
-    }
-
-    override suspend fun update(
-        restaurantId: String,
-        itemId: String,
-        body: MenuRequest
-    ): AppResult<MenuItem> {
-        return try {
-            val resp = api.updateMenuItem(restaurantId, itemId, body)
-            if (resp.isSuccessful) {
-                AppResult.Success(resp.body()!!.toDomain())
-            } else {
-                AppResult.Failure(resp.code(), resp.errorBody()?.string())
-            }
-        } catch (e: IOException) {
-            AppResult.Failure(null, e.message)
-        } catch (e: HttpException) {
-            AppResult.Failure(e.code(), e.message())
-        }
-    }
-
-    override suspend fun delete(restaurantId: String, itemId: String): AppResult<Unit> {
-        return try {
-            val resp = api.deleteMenuItem(restaurantId, itemId)
-            if (resp.isSuccessful) {
+                // BE trả {id, message} -> FE chỉ cần refresh list, không cần parse sâu
                 AppResult.Success(Unit)
             } else {
                 AppResult.Failure(resp.code(), resp.errorBody()?.string())
@@ -91,9 +54,33 @@ class MenuRepository(
             AppResult.Failure(e.code(), e.message())
         }
     }
+
+    override suspend fun update(itemId: String, updatedFields: Map<String, Any?>): AppResult<Unit> {
+        return try {
+            val resp = api.updateMenuItem(itemId, updatedFields)
+            if (resp.isSuccessful) AppResult.Success(Unit)
+            else AppResult.Failure(resp.code(), resp.errorBody()?.string())
+        } catch (e: IOException) {
+            AppResult.Failure(null, e.message)
+        } catch (e: HttpException) {
+            AppResult.Failure(e.code(), e.message())
+        }
+    }
+
+    override suspend fun delete(itemId: String): AppResult<Unit> {
+        return try {
+            val resp = api.deleteMenuItem(itemId)
+            if (resp.isSuccessful) AppResult.Success(Unit)
+            else AppResult.Failure(resp.code(), resp.errorBody()?.string())
+        } catch (e: IOException) {
+            AppResult.Failure(null, e.message)
+        } catch (e: HttpException) {
+            AppResult.Failure(e.code(), e.message())
+        }
+    }
 }
 
-/** Map DTO -> UI model đang dùng trong adapter */
+// map DTO -> UI model bạn đang dùng trong adapter
 private fun MenuResponse.toDomain() = MenuItem(
     id = this.id,
     restaurantId = this.restaurantId,

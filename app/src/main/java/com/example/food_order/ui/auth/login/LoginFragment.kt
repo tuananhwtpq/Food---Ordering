@@ -56,8 +56,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                 when (state) {
                     is LoginUiState.Success -> {
                         val role = state.authResponse.role
+                        val token = state.authResponse.token
+
+                        // 🔴 LƯU TOKEN + ROLE TRƯỚC
+                        SessionManager(requireContext()).saveAuthDetails(token, role)
+
                         if (role.equals("owner", ignoreCase = true)) {
-                            onLoginSuccessOwnerFlow(role)
+                            onLoginSuccessOwnerFlow(role)   // hàm lấy list nhà hàng như bạn đã làm
                         } else {
                             navigateToMain(role)
                         }
@@ -121,49 +126,52 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
     private fun onLoginSuccessOwnerFlow(role: String) {
         val ctx = requireContext()
         val session = SessionManager(ctx)
-
-        // Tạo service có JWT sẵn (đã được RetrofitInstance + AuthInterceptor của bạn xử lý)
-        val restaurantApi = RetrofitInstance
-            .createAuthorizedServiceGeneric<RestaurantApiService>(ctx)
+        val service = RetrofitInstance.createAuthorizedServiceGeneric<RestaurantApiService>(ctx)
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val res = restaurantApi.getMyRestaurants()
-                if (res.isSuccessful) {
-                    val list = res.body()?.data.orEmpty()
-                    session.saveSelectedRestaurantId(list.first().id)
-                    Log.e("OwnerLogin", "getMyRestaurants failed: HTTP ${res.code()}, body=${res.errorBody()?.string()}")
-
-                    when {
-                        list.isEmpty() -> {
-                            // Không có nhà hàng nào -> xoá selection để tránh null về sau
-                            session.clearSelectedRestaurantId()
-                            showToast("Tài khoản owner chưa có nhà hàng nào.")
-                            navigateToMain(role)
-                        }
-                        list.size == 1 -> {
-                            session.saveSelectedRestaurantId(list.first().id)
-                            navigateToMain(role)
-                        }
-                        else -> {
-                            // Có nhiều nhà hàng -> cho chọn
-                            showRestaurantPicker(list) { chosen ->
-                                session.saveSelectedRestaurantId(chosen.id)
-                                navigateToMain(role)
-                            }
-                        }
+                val res = service.getMyRestaurants()
+                if (!res.isSuccessful) {
+                    Log.e("OwnerLogin", "getMyRestaurants HTTP=${res.code()} body=${res.errorBody()?.string()}")
+                    showToast("Không lấy được danh sách nhà hàng (HTTP ${res.code()})")
+                    navigateToMain(role); return@launch
+                }
+                val list = res.body()?.data.orEmpty()
+                Log.d("OwnerLogin", "myRestaurants size=${list.size}")
+                when {
+                    list.isEmpty() -> {
+                        session.clearSelectedRestaurantId()
+                        showToast("Tài khoản owner chưa có nhà hàng.")
+                        navigateToMain(role)
                     }
-                } else {
-                    showToast("Không lấy được danh sách nhà hàng (HTTP ${res.code()}). Tiếp tục vào app.")
-                    navigateToMain(role)
+                    list.size == 1 -> {
+                        val r = list.first()
+                        session.saveSelectedRestaurantId(r.id, r.name)
+                        Log.d("OwnerLogin", "Saved restaurantId=${r.id}")
+                        navigateToMain(role)
+                    }
+                    else -> {
+                        val names = list.map { it.name }.toTypedArray()
+                        AlertDialog.Builder(ctx)
+                            .setTitle("Chọn nhà hàng")
+                            .setItems(names) { d, idx ->
+                                val chosen = list[idx]
+                                session.saveSelectedRestaurantId(chosen.id, chosen.name)
+                                Log.d("OwnerLogin", "Picked restaurantId=${chosen.id}")
+                                navigateToMain(role)
+                                d.dismiss()
+                            }
+                            .setNegativeButton(android.R.string.cancel) { _, _ -> navigateToMain(role) }
+                            .show()
+                    }
                 }
             } catch (e: Exception) {
+                Log.e("OwnerLogin", "getMyRestaurants error", e)
                 showToast("Lỗi lấy nhà hàng: ${e.message}")
                 navigateToMain(role)
             }
         }
     }
-
     private fun showRestaurantPicker(
         restaurants: List<OwnerRestaurant>,
         onPicked: (OwnerRestaurant) -> Unit

@@ -8,6 +8,8 @@ data class OwnerRestaurantsResponse(
 
 data class OwnerRestaurant(
     val id: String,
+    val ownerId: String,
     val name: String,
-    val imageUrl: String? = null
+    val address: String?,
+    val imageUrl: String?
 )

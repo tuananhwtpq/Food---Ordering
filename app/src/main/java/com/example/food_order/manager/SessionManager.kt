@@ -10,9 +10,8 @@ class SessionManager(context: Context) {
     companion object {
         const val AUTH_TOKEN = "auth_token"
         const val USER_ROLE = "user_role"
-
-        // NEW:
-        const val SELECTED_RESTAURANT_ID = "selected_restaurant_id"
+        const val SELECTED_RESTAURANT_ID = "selected_restaurant_id"   // thêm
+        const val SELECTED_RESTAURANT_NAME = "selected_restaurant_name" // (tùy chọn)
     }
 
     fun saveAuthDetails(token: String, role: String) {
@@ -25,14 +24,16 @@ class SessionManager(context: Context) {
     fun fetchAuthToken(): String? = prefs.getString(AUTH_TOKEN, null)
     fun fetchUserRole(): String? = prefs.getString(USER_ROLE, null)
 
-    // NEW:
-    fun saveSelectedRestaurantId(id: String) {
+    fun saveSelectedRestaurantId(id: String, name: String? = null) {
         prefs.edit().putString(SELECTED_RESTAURANT_ID, id).apply()
+        if (name != null) prefs.edit().putString(SELECTED_RESTAURANT_NAME, name).apply()
     }
+
     fun fetchSelectedRestaurantId(): String? =
         prefs.getString(SELECTED_RESTAURANT_ID, null)
 
     fun clearSelectedRestaurantId() {
-        prefs.edit().remove(SELECTED_RESTAURANT_ID).apply()
+        prefs.edit().remove(SELECTED_RESTAURANT_ID).remove(SELECTED_RESTAURANT_NAME).apply()
     }
+
 }
