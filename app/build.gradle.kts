@@ -67,7 +67,9 @@ dependencies {
     implementation(libs.logging.interceptor)
 
     implementation("com.google.android.gms:play-services-location:21.0.1")
-
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // 5. Image Loading (Glide)
     implementation(libs.glide)
