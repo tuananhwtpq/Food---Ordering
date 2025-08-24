@@ -26,7 +26,7 @@ class RestaurantListAdapter(
             binding.tvRestaurantName.text = restaurant.name
             binding.tvAddress.text = restaurant.address
 
-            binding.tvDistance.text = restaurant.distance.toString() + " km "
+            //binding.tvDistance.text = restaurant.distance.toString() + " km "
 
             Glide.with(binding.root.context)
                 .load(restaurant.imageUrl)

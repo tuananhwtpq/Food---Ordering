@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
 
     // 5. Image Loading (Glide)
     implementation(libs.glide)

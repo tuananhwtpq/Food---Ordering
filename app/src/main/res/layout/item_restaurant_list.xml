@@ -54,19 +54,19 @@
             app:layout_constraintTop_toBottomOf="@id/tvRestaurantName"
             tools:text="236 Đ. Đinh Tiên Hoàng, P. Đa Kao, Quận 1, TP.HCM" />
 
-        <TextView
-            android:id="@+id/tvDistance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/tvRestaurantName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvRestaurantName"
-            tools:text="1.2 km" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/tvDistance"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginEnd="16dp"-->
+        <!--            android:paddingHorizontal="8dp"-->
+        <!--            android:paddingVertical="4dp"-->
+        <!--            android:textColor="@color/black"-->
+        <!--            android:textStyle="bold"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/tvRestaurantName"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/tvRestaurantName"-->
+        <!--            tools:text="1.2 km" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

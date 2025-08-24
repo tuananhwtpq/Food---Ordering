@@ -20,6 +20,7 @@ import com.example.food_order.ui.adapter.PopularFoodAdapter
 import com.example.food_order.ui.adapter.RestaurantAdapter
 import com.example.food_order.utils.extension.launchOnStarted
 import com.example.food_order.utils.extension.safeNavigate
+import com.example.food_order.utils.extension.showToast
 
 
 class CustomerHomeFragment : BaseFragment<FragmentCustomerHomeBinding>() {
@@ -34,8 +35,12 @@ class CustomerHomeFragment : BaseFragment<FragmentCustomerHomeBinding>() {
     private val categoryAdapter = CategoryAdapter { category ->
         navigateToCategoryDetail(category)
     }
-    private val restaurantAdapter = RestaurantAdapter { restaurant -> }
-    private val popularFoodAdapter = PopularFoodAdapter { foodItem -> }
+    private val restaurantAdapter = RestaurantAdapter { restaurant ->
+        navigateToRestaurantDetail(restaurant.id)
+    }
+    private val popularFoodAdapter = PopularFoodAdapter { foodItem ->
+        navigateToFoodItemDetail(foodItem.id)
+    }
 
     override fun getViewBinding(
         inflater: LayoutInflater,
@@ -71,6 +76,8 @@ class CustomerHomeFragment : BaseFragment<FragmentCustomerHomeBinding>() {
 
     override fun initListener() {
         super.initListener()
+
+        binding.edSearch.setOnClickListener { showToast("Chức năng này hiện chưa sử dụng được") }
     }
 
     override fun onBack() {
@@ -91,6 +98,21 @@ class CustomerHomeFragment : BaseFragment<FragmentCustomerHomeBinding>() {
         )
 
         safeNavigate(R.id.action_customerHomeFragment_to_categoryDetailFragment, bundle)
+    }
+
+    private fun navigateToRestaurantDetail(restaurantId: String) {
+        val bundle = bundleOf(
+            "restaurantId" to restaurantId
+        )
+        safeNavigate(R.id.action_customerHomeFragment_to_restaurantDetailFragment, bundle)
+    }
+
+    private fun navigateToFoodItemDetail(foodItemId: String) {
+        val bundle = bundleOf(
+            "foodItemId" to foodItemId
+        )
+        safeNavigate(R.id.action_customerHomeFragment_to_popularItemDetailFragment, bundle)
+
     }
 
 
