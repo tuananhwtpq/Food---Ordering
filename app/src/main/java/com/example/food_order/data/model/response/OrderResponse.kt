@@ -12,8 +12,7 @@ data class OrderResponse(
     val stripePaymentIntentId: String?,
     val totalAmount: Double,
     val items: List<OrderItemResponse> = emptyList(),
-    val restaurant: RestaurantBriefResponse? = null,
-    val createdAt: String? = null
+    val restaurant: RestaurantBriefResponse? = null
 )
 
 data class AddressResponse(
