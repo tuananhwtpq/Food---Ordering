@@ -28,7 +28,7 @@ class OwnerOrdersAdapter(
         tvCustomer.text = "Khách: ${order.customer}"
         tvAddress.text = "Địa chỉ: ${order.address}"
         tvNote.text = "Ghi chú: ${order.note}"
-        tvTotal.text = "₫${order.total}"
+        tvTotal.text = "${order.total}$"
         tvTime.text = order.timeText
 
         // Nested list các món

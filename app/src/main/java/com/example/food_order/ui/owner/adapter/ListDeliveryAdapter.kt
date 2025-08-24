@@ -29,7 +29,7 @@ class ListDeliveryAdapter(
         tvCustomer.text = order.customer
         tvAddress.text = "Địa chỉ: ${order.address}"
         tvNote.text = "Ghi chú: ${order.note}"
-        tvTotal.text = "₫${order.total}"
+        tvTotal.text = "${order.total}S"
         tvTime.text = order.timeText
 
         rcvItemsRight.apply {
