@@ -4,7 +4,6 @@ import com.example.food_order.data.api.AuthApiService
 import com.example.food_order.data.model.request.LoginRequest
 import com.example.food_order.data.model.request.SignupRequest
 import com.example.food_order.data.model.response.AuthResponse
-import com.example.food_order.di.RetrofitInstance
 import com.example.food_order.manager.SessionManager
 import com.example.food_order.utils.extension.parseError
 

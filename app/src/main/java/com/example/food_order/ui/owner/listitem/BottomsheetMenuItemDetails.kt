@@ -1,14 +1,23 @@
 package com.example.food_order.ui.owner.listitem
 
 import android.os.Bundle
-import com.example.food_order.data.repository.MenuItem
 import android.view.View
 import android.widget.*
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.example.food_order.R
 import com.example.food_order.ui.owner.adapter.MenuAdapter
+import com.example.food_order.data.repository.MenuItem
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.example.food_order.data.model.request.MenuRequest
+import com.example.food_order.databinding.FragmentBottomsheetMenuItemDetailsBinding
 
 class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsheet_menu_item_details) {
+
+    // callbacks ra Fragment
+    var onCreate: ((com.example.food_order.data.model.request.MenuRequest) -> Unit)? = null
+    var onSave: ((MenuItem) -> Unit)? = null
+    var onDelete: ((String) -> Unit)? = null
 
     companion object {
         private const val ARG_ID = "id"
@@ -30,11 +39,19 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
                 putString(ARG_CREATED, item.createdAt)
             }
         }
-    }
 
-    // callback cho Fragment
-    var onSave: ((MenuItem) -> Unit)? = null
-    var onDelete: ((String) -> Unit)? = null
+        fun newForCreate(restaurantId: String): MenuItemBottomSheet = MenuItemBottomSheet().apply {
+            arguments = Bundle().apply {
+                putString(ARG_ID, null) // null -> create mode
+                putString(ARG_RES_ID, restaurantId)
+                putString(ARG_NAME, "")
+                putString(ARG_DESC, "")
+                putString(ARG_IMAGE, "")
+                putDouble(ARG_PRICE, 0.0)
+                putString(ARG_CREATED, null)
+            }
+        }
+    }
 
     // Views
     private lateinit var btnClose: ImageButton
@@ -69,15 +86,31 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
         etRestaurantIdReadOnly = view.findViewById(R.id.etRestaurantIdReadOnly)
         etCreatedAtReadOnly = view.findViewById(R.id.etCreatedAtReadOnly)
 
+        // beautify a bit (không đổi XML để tránh conflict)
+        listOf(btnEdit, btnSave, btnDelete).forEach {
+            it.isAllCaps = false
+        }
+
         // read args
         val id = requireArguments().getString(ARG_ID)
-        val restaurantId = requireArguments().getString(ARG_RES_ID)!!
+        val restaurantId = requireArguments().getString(ARG_RES_ID) ?: ""
         val name = requireArguments().getString(ARG_NAME) ?: ""
         val desc = requireArguments().getString(ARG_DESC)
         val price = requireArguments().getDouble(ARG_PRICE)
         val image = requireArguments().getString(ARG_IMAGE)
         val created = requireArguments().getString(ARG_CREATED)
 
+        val binding : FragmentBottomsheetMenuItemDetailsBinding = FragmentBottomsheetMenuItemDetailsBinding.bind(view)
+        if (image.isNullOrBlank()) {
+
+            binding.ivImageLarge.setImageResource(R.drawable.ic_image_placeholder)
+        } else {
+            Glide.with(requireContext())
+                .load(image)
+                .placeholder(R.drawable.ic_image_placeholder)
+                .error(R.drawable.ic_broken_image)
+                .into(binding.ivImageLarge)
+        }
         // bind
         etName.setText(name)
         etPrice.setText(if (price == 0.0) "" else price.toString())
@@ -88,10 +121,31 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
         etRestaurantIdReadOnly.setText(restaurantId)
         etCreatedAtReadOnly.setText(created ?: "—")
 
-        setEditing(false)
+        val isCreate = id.isNullOrBlank()
 
-        btnEdit.setOnClickListener { setEditing(true) }
+        // trạng thái nút ban đầu
+        if (isCreate) {
+            // tạo mới -> chỉ Lưu + Xóa; cho phép nhập ngay
+            setEditing(true)
+            btnEdit.visibility = View.GONE
+            btnSave.visibility = View.VISIBLE
+            btnDelete.visibility = View.VISIBLE
+        } else {
+            // xem chi tiết -> hiện Sửa + Xóa; Lưu ẩn
+            setEditing(false)
+            btnEdit.visibility = View.VISIBLE
+            btnSave.visibility = View.GONE
+            btnDelete.visibility = View.VISIBLE
+        }
 
+        // click Sửa -> bật edit, ẩn Sửa, hiện Lưu
+        btnEdit.setOnClickListener {
+            setEditing(true)
+            btnEdit.visibility = View.GONE
+            btnSave.visibility = View.VISIBLE
+        }
+
+        // click Lưu:
         btnSave.setOnClickListener {
             val newName = etName.text.toString().trim()
             val newPrice = etPrice.text.toString().toDoubleOrNull() ?: 0.0
@@ -103,24 +157,44 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
                 return@setOnClickListener
             }
 
-            val updated = MenuItem(
-                id = id,
-                restaurantId = restaurantId,
-                name = newName,
-                description = newDesc,
-                price = newPrice,
-                imageUrl = newImg,
-                arModelUrl = null,
-                createdAt = created
-            )
-            onSave?.invoke(updated) // Fragment sẽ gọi API rồi cập nhật list
-            setEditing(false)
+            if (isCreate) {
+                // tạo mới
+                val req = MenuRequest(
+                    restaurantId = restaurantId,
+                    name = newName,
+                    description = newDesc,
+                    price = newPrice,
+                    imageUrl = newImg,
+                    arModelUrl = null
+                )
+                onCreate?.invoke(req)
+                dismiss() // đóng sheet sau khi gửi callback
+            } else {
+                // cập nhật
+                val updated = MenuItem(
+                    id = id,
+                    restaurantId = restaurantId,
+                    name = newName,
+                    description = newDesc,
+                    price = newPrice,
+                    imageUrl = newImg,
+                    arModelUrl = null,
+                    createdAt = created
+                )
+                onSave?.invoke(updated)
+                dismiss()
+            }
         }
 
+        // click Xóa:
         btnDelete.setOnClickListener {
-            id?.let { onDelete?.invoke(it) }
-            dismiss()
-            // tuỳ ý: dismiss sau khi fragment xử lý xong
+            if (isCreate) {
+                // tạo mới -> coi như "hủy"
+                dismiss()
+            } else {
+                id?.let { onDelete?.invoke(it) }
+                dismiss()
+            }
         }
 
         btnClose.setOnClickListener { dismiss() }
@@ -128,12 +202,13 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
 
     private fun setEditing(editing: Boolean) {
         listOf(etName, etPrice, etDescription, etImageUrl).forEach { it.isEnabled = editing }
+        // các ô readonly luôn khóa
         listOf(etIdReadOnly, etRestaurantIdReadOnly, etCreatedAtReadOnly).forEach { it.isEnabled = false }
-        btnSave.visibility = if (editing) View.VISIBLE else View.GONE
-        btnEdit.visibility = if (editing) View.GONE else View.VISIBLE
+        // chỉ điều khiển visibility ở nơi gọi; hàm này chỉ lo enable/disable field
     }
 }
+
+/** Giữ lại extension submitList cho adapter hiện tại */
 fun MenuAdapter.submitList(items: List<MenuItem>) {
-    // MenuAdapter hiện đang có hàm `submit(...)`
     this.submit(items)
 }

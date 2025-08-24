@@ -4,8 +4,10 @@ import android.content.Context
 import com.example.food_order.data.api.AuthApiService
 import com.example.food_order.data.api.AuthInterceptor
 import com.example.food_order.data.api.MainApiService
+import com.example.food_order.di.AppModule_ProvideSessionManagerFactory.provideSessionManager
 import com.example.food_order.manager.SessionManager
 import com.example.food_order.utils.Constants
+
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -42,20 +44,20 @@ object RetrofitInstance {
             .create(MainApiService::class.java)
     }
 
-    fun <T> create(context: Context, apiClass: Class<T>): T {
-        val sessionManager = SessionManager(context)
 
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(sessionManager))
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+    /** Tạo service bất kỳ (ví dụ MenuApiService) nhưng vẫn kèm AuthInterceptor */
+    inline fun <reified T> createAuthorizedServiceGeneric(context: Context): T {
+        // Nếu dự án đã có SessionManager + AuthInterceptor cho flow login, dùng lại:
+        val sessionManager = SessionManager(context)       // <— bạn đã có hàm này
+        val client = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(sessionManager))  // <— dùng đúng interceptor hiện có
             .build()
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)                           // <— giữ đúng BASE_API của dự án
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
             .build()
-
-        return retrofit.create(apiClass)
+            .create(T::class.java)
     }
 }
