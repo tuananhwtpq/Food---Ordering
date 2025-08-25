@@ -23,9 +23,9 @@ class CartViewModel(
     private val _itemUpdateStatus = MutableLiveData<Result<Unit>>()
     val itemUpdateStatus: LiveData<Result<Unit>> = _itemUpdateStatus
 
-    init {
-        getCartDetails()
-    }
+//    init {
+//        getCartDetails()
+//    }
 
     fun getCartDetails() {
         viewModelScope.launch {

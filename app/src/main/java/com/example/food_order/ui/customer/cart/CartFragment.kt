@@ -94,5 +94,10 @@ class CartFragment : BaseFragment<FragmentCartBinding>() {
         binding.rvCartItems.adapter = cartAdapter
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getCartDetails()
+    }
+
 
 }
