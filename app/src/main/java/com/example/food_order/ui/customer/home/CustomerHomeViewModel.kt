@@ -1,13 +1,16 @@
 package com.example.food_order.ui.customer.home
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.food_order.data.api.RestaurantApiService
 import com.example.food_order.data.model.common.Category
+import com.example.food_order.data.model.common.FoodItem
 import com.example.food_order.data.model.common.Restaurant
 import com.example.food_order.data.repository.CategoryRepository
 import com.example.food_order.data.repository.FakeFoodRepository
+import com.example.food_order.data.repository.MenuItem
 import com.example.food_order.data.repository.RestaurantRepository
 import com.example.food_order.manager.SessionManager
 import com.example.food_order.utils.state.CustomerHomeUiState
@@ -20,6 +23,7 @@ import kotlinx.coroutines.launch
 class CustomerHomeViewModel(
     private val categoryRepository: CategoryRepository,
     private val restaurantRepository: RestaurantRepository,
+    private val restaurantApiService: RestaurantApiService,
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
@@ -30,60 +34,55 @@ class CustomerHomeViewModel(
         fetchAllData()
     }
 
-//    fun fetchAllData() {
-//        viewModelScope.launch {
-//            _uiState.update { it.copy(isLoading = true, error = null) }
-//
-//            val categoriesResult: Result<List<Category>> = categoryRepository.getAllCategories()
-//
-//            categoriesResult.onSuccess { categoryList ->
-//                _uiState.update { currentState ->
-//                    currentState.copy(categories = categoryList)
-//                }
-//            }.onFailure { exception ->
-//                _uiState.update { currentState ->
-//                    currentState.copy(error = exception.message)
-//                }
-//            }
-//
-//            val fakeRestaurants = FakeFoodRepository.getFeaturedRestaurants()
-//            val fakePopularItems = FakeFoodRepository.getPopularItems()
-//            _uiState.update { currentState ->
-//                currentState.copy(
-//                    restaurants = fakeRestaurants,
-//                    popularItems = fakePopularItems
-//                )
-//            }
-//
-//            _uiState.update { it.copy(isLoading = false) }
-//        }
-//    }
-
     fun fetchAllData() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             val lat = sessionManager.fetchLatitude() ?: 21.053731
             val lon = sessionManager.fetchLongitude() ?: 105.7351068
-
-            val categoriesResult = categoryRepository.getAllCategories()
-            val restaurantsResult = restaurantRepository.getNearbyRestaurants(lat, lon)
+            val restaurantId = "a323e1ed-d16d-4506-b1c8-ad4cc31db868"
 
             var categoryList: List<Category> = emptyList()
             var restaurantList: List<Restaurant> = emptyList()
+            var popularItemList: List<MenuItem> = emptyList()
             var errorMessage: String? = null
 
-            categoriesResult.onSuccess { categories ->
-                categoryList = categories
-            }.onFailure {
-                errorMessage = it.message
+            try {
+                val categoriesResponse = categoryRepository.getAllCategories()
+                categoryList = categoriesResponse.getOrThrow()
+            } catch (e: Exception) {
+                errorMessage = "Failed to fetch categories: ${e.message}"
+                Log.e("CustomerHomeViewModel", errorMessage, e)
             }
 
-            restaurantsResult.onSuccess { restaurants ->
-                restaurantList = restaurants
-            }.onFailure {
+            try {
+                val restaurantsResponse = restaurantRepository.getNearbyRestaurants(lat, lon)
+                restaurantList = restaurantsResponse.getOrThrow()
+            } catch (e: Exception) {
                 if (errorMessage == null) {
-                    errorMessage = it.message
+                    errorMessage = "Failed to fetch restaurants: ${e.message}"
+                    Log.e("CustomerHomeViewModel", errorMessage, e)
+                }
+            }
+
+            try {
+                val response = restaurantApiService.getRestaurantMenu(restaurantId)
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.data != null) {
+                        popularItemList = body.data
+                    } else {
+                        errorMessage = "No menu items found for restaurant"
+                        Log.e("CustomerHomeViewModel", errorMessage)
+                    }
+                } else {
+                    errorMessage = "Failed to fetch menu items: HTTP ${response.code()}"
+                    Log.e("CustomerHomeViewModel", errorMessage)
+                }
+            } catch (e: Exception) {
+                if (errorMessage == null) {
+                    errorMessage = "Failed to fetch popular items: ${e.message}"
+                    Log.e("CustomerHomeViewModel", errorMessage, e)
                 }
             }
 
@@ -92,7 +91,7 @@ class CustomerHomeViewModel(
                     isLoading = false,
                     categories = categoryList,
                     restaurants = restaurantList,
-                    popularItems = emptyList(),
+                    popularItems = popularItemList,
                     error = errorMessage
                 )
             }

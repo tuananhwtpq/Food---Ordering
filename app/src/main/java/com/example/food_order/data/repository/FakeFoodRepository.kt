@@ -74,43 +74,43 @@ object FakeFoodRepository {
         )
     }
 
-    fun getPopularItems(): List<FoodItem> {
-        return listOf(
-            FoodItem(
-                "1",
-                "Bún bò Huế",
-                "Ngon tuyệt vời",
-                55000.0,
-                "https://res.cloudinary.com/dsizusoj0/image/upload/v1754997273/khoai_tay_chien_hudenv.jpg"
-            ),
-            FoodItem(
-                "2",
-                "Bánh xèo miền Tây",
-                "Ngon tuyệt vời",
-                45000.0,
-                "https://res.cloudinary.com/dsizusoj0/image/upload/v1754997273/khoai_tay_chien_hudenv.jpg"
-            ),
-            FoodItem(
-                "3",
-                "Gỏi cuốn tôm thịt",
-                "Ngon tuyệt vời",
-                30000.0,
-                "https://res.cloudinary.com/dsizusoj0/image/upload/v1754997273/khoai_tay_chien_hudenv.jpg"
-            ),
-            FoodItem(
-                "4",
-                "Nem lụi",
-                "Ngon tuyệt vời",
-                40000.0,
-                "https://res.cloudinary.com/dsizusoj0/image/upload/v1754997273/khoai_tay_chien_hudenv.jpg"
-            ),
-            FoodItem(
-                "5",
-                "Chè ba màu",
-                "Ngon tuyệt vời",
-                25000.0,
-                "https://res.cloudinary.com/dsizusoj0/image/upload/v1754997273/khoai_tay_chien_hudenv.jpg"
-            )
-        )
-    }
+//    fun getPopularItems(): List<FoodItem> {
+//        return listOf(
+//            FoodItem(
+//                "1",
+//                "Bún bò Huế",
+//                "Ngon tuyệt vời",
+//                55000.0,
+//                "https://res.cloudinary.com/dsizusoj0/image/upload/v1754997273/khoai_tay_chien_hudenv.jpg"
+//            ),
+//            FoodItem(
+//                "2",
+//                "Bánh xèo miền Tây",
+//                "Ngon tuyệt vời",
+//                45000.0,
+//                "https://res.cloudinary.com/dsizusoj0/image/upload/v1754997273/khoai_tay_chien_hudenv.jpg"
+//            ),
+//            FoodItem(
+//                "3",
+//                "Gỏi cuốn tôm thịt",
+//                "Ngon tuyệt vời",
+//                30000.0,
+//                "https://res.cloudinary.com/dsizusoj0/image/upload/v1754997273/khoai_tay_chien_hudenv.jpg"
+//            ),
+//            FoodItem(
+//                "4",
+//                "Nem lụi",
+//                "Ngon tuyệt vời",
+//                40000.0,
+//                "https://res.cloudinary.com/dsizusoj0/image/upload/v1754997273/khoai_tay_chien_hudenv.jpg"
+//            ),
+//            FoodItem(
+//                "5",
+//                "Chè ba màu",
+//                "Ngon tuyệt vời",
+//                25000.0,
+//                "https://res.cloudinary.com/dsizusoj0/image/upload/v1754997273/khoai_tay_chien_hudenv.jpg"
+//            )
+//        )
+//    }
 }
