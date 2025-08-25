@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/customerOrdersFragment"
-        android:name="com.example.food_order.ui.owner.CustomerOrdersFragment"
+        android:name="com.example.food_order.ui.customer.orders.CustomerOrdersFragment"
         android:label="fragment_customer_orders"
         tools:layout="@layout/fragment_customer_orders">
         <action
@@ -134,6 +134,10 @@
 
         <argument
             android:name="foodItemId"
+            app:argType="string" />
+
+        <argument
+            android:name="restaurantId"
             app:argType="string" />
 
     </fragment>

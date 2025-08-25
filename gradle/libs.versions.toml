@@ -9,7 +9,6 @@ material = "1.11.0"
 activity = "1.8.2"
 constraintlayout = "2.1.4"
 
-kotlinxSerializationJson = "1.6.3"
 
 lifecycle = "2.7.0"
 navigation = "2.7.7"
@@ -60,13 +59,9 @@ androidx-ui-test-jvmstubs = { group = "androidx.compose.ui", name = "ui-test-jvm
 # Xóa dòng activity thừa
 
 
-# THÊM MỚI thư viện runtime của serialization
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

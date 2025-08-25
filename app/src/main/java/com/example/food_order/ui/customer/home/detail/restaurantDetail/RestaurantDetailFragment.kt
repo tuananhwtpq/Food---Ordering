@@ -104,8 +104,11 @@ class RestaurantDetailFragment : BaseFragment<FragmentRestaurantDetailBinding>()
     }
 
     private fun navigateToMenuDetail(foodItemId: String) {
+        val restaurantId = args.restaurantId
+
         val bundle = bundleOf(
-            "foodItemId" to foodItemId
+            "foodItemId" to foodItemId,
+            "restaurantId" to restaurantId
         )
         safeNavigate(R.id.action_restaurantDetailFragment_to_restaurantMenuItemFragment, bundle)
     }
