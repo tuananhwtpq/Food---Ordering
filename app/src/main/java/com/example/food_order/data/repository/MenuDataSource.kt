@@ -4,7 +4,6 @@ package com.example_food_order.data.repository
  * Chỉ giữ model UI dùng cho adapter. Không để fake-data/repository ở đây nữa.
  */
 import android.annotation.SuppressLint
-import com.example.food_order.data.repository.FakeMenuRepository.memory
 import java.text.SimpleDateFormat
 import kotlin.math.absoluteValue
 import java.time.OffsetDateTime

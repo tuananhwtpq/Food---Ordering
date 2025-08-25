@@ -35,6 +35,8 @@ class SessionManager(context: Context) {
             putString(AUTH_TOKEN, token)
             putString(USER_ROLE, role)
         }.apply()
+    }
+
     fun saveLocation(latitude: Double, longitude: Double) {
         val editor = prefs.edit()
         editor.putFloat(USER_LATITUDE, latitude.toFloat())
@@ -42,12 +44,15 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
-    fun fetchAuthToken(): String? = prefs.getString(AUTH_TOKEN, null)
     fun fetchUserRole(): String? = prefs.getString(USER_ROLE, null)
 
     fun saveSelectedRestaurantId(id: String, name: String? = null) {
         prefs.edit().putString(SELECTED_RESTAURANT_ID, id).apply()
         if (name != null) prefs.edit().putString(SELECTED_RESTAURANT_NAME, name).apply()
+        fun fetchLatitude(): Double? {
+            return prefs.getFloat(USER_LATITUDE, 0f).toDouble().takeIf { it != 0.0 }
+        }
+    }
     fun fetchLatitude(): Double? {
         return prefs.getFloat(USER_LATITUDE, 0f).toDouble().takeIf { it != 0.0 }
     }
