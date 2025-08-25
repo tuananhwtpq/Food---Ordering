@@ -20,7 +20,7 @@ class AuthRepository(
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {
-                    //sessionManager.saveAuthDetails(body.token, body.role, body.userId)
+                    sessionManager.saveAuthDetails(body)
                     Result.success(body)
                 } else {
                     Result.failure(Exception("Response body is null"))

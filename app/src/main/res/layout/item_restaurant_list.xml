@@ -49,7 +49,7 @@
             android:maxLines="2"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tvRestaurantName"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvRestaurantName"
             app:layout_constraintTop_toBottomOf="@id/tvRestaurantName"
             tools:text="236 Đ. Đinh Tiên Hoàng, P. Đa Kao, Quận 1, TP.HCM" />
