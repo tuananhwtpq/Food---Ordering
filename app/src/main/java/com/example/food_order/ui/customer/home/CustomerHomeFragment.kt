@@ -43,7 +43,12 @@ class CustomerHomeFragment : BaseFragment<FragmentCustomerHomeBinding>() {
         val categoryRepo = CategoryRepository(categoryApiService)
         val restaurantRepo = RestaurantRepository(restaurantApiService)
 
-        CustomerHomeViewModelFactory(categoryRepo, restaurantRepo, sessionManager)
+        CustomerHomeViewModelFactory(
+            categoryRepo,
+            restaurantRepo,
+            restaurantApiService,
+            sessionManager
+        )
     }
 
     private val categoryAdapter = CategoryAdapter { category ->
@@ -53,8 +58,8 @@ class CustomerHomeFragment : BaseFragment<FragmentCustomerHomeBinding>() {
         navigateToRestaurantDetail(restaurant.id)
         Log.d(TAG, "Restaurant ID: ${restaurant.id}")
     }
-    private val popularFoodAdapter = PopularFoodAdapter { foodItem ->
-        navigateToFoodItemDetail(foodItem.id)
+    private val popularFoodAdapter = PopularFoodAdapter { menuItem ->
+        navigateToFoodItemDetail(menuItem.id.toString())
     }
 
     override fun getViewBinding(
@@ -74,11 +79,10 @@ class CustomerHomeFragment : BaseFragment<FragmentCustomerHomeBinding>() {
 
         launchOnStarted {
             viewModel.uiState.collect { uiState ->
-
+                // [THÊM] Hiển thị lỗi nếu có
                 uiState.error?.let { errorMessage ->
                     Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                 }
-
                 if (!uiState.isLoading) {
                     categoryAdapter.setData(uiState.categories)
                     restaurantAdapter.setData(uiState.restaurants)
@@ -86,7 +90,7 @@ class CustomerHomeFragment : BaseFragment<FragmentCustomerHomeBinding>() {
                 }
             }
         }
-        }
+    }
 
 
     override fun initListener() {

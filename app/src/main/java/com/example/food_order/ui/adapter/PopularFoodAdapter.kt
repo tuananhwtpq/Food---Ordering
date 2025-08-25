@@ -7,20 +7,21 @@ import com.bumptech.glide.Glide
 import com.example.food_order.data.model.common.Category
 import com.example.food_order.data.model.common.FoodItem
 import com.example.food_order.data.model.common.Restaurant
+import com.example.food_order.data.repository.MenuItem
 import com.example.food_order.databinding.ItemFoodPopularBinding
 import java.text.NumberFormat
 import java.util.Locale
 
 class PopularFoodAdapter(
-    private val onItemClick: (FoodItem) -> Unit
+    private val onItemClick: (MenuItem) -> Unit
 ) :
     RecyclerView.Adapter<PopularFoodAdapter.PopularFoodViewHolder>() {
 
-    private var foodItems: List<FoodItem> = emptyList()
+    private var foodItems: List<MenuItem> = emptyList()
 
     inner class PopularFoodViewHolder(private val binding: ItemFoodPopularBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(foodItem: FoodItem) {
+        fun bind(foodItem: MenuItem) {
             binding.tvFoodName.text = foodItem.name
             val formatter = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
             binding.tvFoodPrice.text = formatter.format(foodItem.price)
@@ -46,7 +47,7 @@ class PopularFoodAdapter(
 
     override fun getItemCount(): Int = foodItems.size
 
-    fun setData(newFoodItems: List<FoodItem>) {
+    fun setData(newFoodItems: List<MenuItem>) {
         this.foodItems = newFoodItems
         notifyDataSetChanged()
     }
