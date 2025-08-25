@@ -3,7 +3,6 @@ package com.example.food_order.data.api
 import com.example.food_order.data.model.request.MenuRequest
 import com.example.food_order.data.model.request.UpdateMenuItemRequest
 import com.example.food_order.data.model.response.MenuListResponse
-import com.example_food_order.data.repository.MenuItem
 import retrofit2.Response
 import retrofit2.http.*
 

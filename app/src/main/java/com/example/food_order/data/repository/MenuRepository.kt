@@ -37,8 +37,11 @@ class MenuRepository(
     override suspend fun fetchMenu(restaurantId: String): AppResult<List<MenuItem>> {
         return try {
             val resp = api.getMenu(restaurantId)
+            val code = resp.code()
+            val size = resp.body()?.foodItems?.size ?: -1
+            android.util.Log.d("MenuRepo", "GET /restaurants/$restaurantId/menu -> code=$code, size=$size")
             if (resp.isSuccessful) {
-                val list = resp.body()?.foodItems.orEmpty().map { it.toDomain() } // <-- đọc foodItems
+                val list = resp.body()?.foodItems.orEmpty().map { it.toDomain() }
                 AppResult.Success(list)
             } else {
                 AppResult.Failure(resp.code(), resp.errorBody()?.string())
@@ -49,6 +52,7 @@ class MenuRepository(
             AppResult.Failure(e.code(), e.message())
         }
     }
+
 
     override suspend fun create(restaurantId: String, body: MenuRequest): AppResult<Unit> {
         return try {
