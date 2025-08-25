@@ -98,6 +98,9 @@
         <argument
             android:name="categoryName"
             app:argType="string" />
+        <action
+            android:id="@+id/action_categoryDetailFragment_to_restaurantDetailFragment"
+            app:destination="@id/restaurantDetailFragment" />
 
 
     </fragment>
