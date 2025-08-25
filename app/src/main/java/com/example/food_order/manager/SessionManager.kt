@@ -11,6 +11,8 @@ class SessionManager(context: Context) {
     companion object {
         const val AUTH_TOKEN = "auth_token"
         const val USER_ROLE = "user_role"
+        const val SELECTED_RESTAURANT_ID = "selected_restaurant_id"   // thêm
+        const val SELECTED_RESTAURANT_NAME = "selected_restaurant_name" // (tùy chọn)
         const val USER_ID = "user_id"
         const val USER_EMAIL = "user_email"
         const val USER_NAME = "user_name"
@@ -28,6 +30,13 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
+    fun saveAuthDetails(token: String, role: String) {
+        prefs.edit().apply {
+            putString(AUTH_TOKEN, token)
+            putString(USER_ROLE, role)
+        }.apply()
+    }
+
     fun saveLocation(latitude: Double, longitude: Double) {
         val editor = prefs.edit()
         editor.putFloat(USER_LATITUDE, latitude.toFloat())
@@ -35,6 +44,15 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
+    fun fetchUserRole(): String? = prefs.getString(USER_ROLE, null)
+
+    fun saveSelectedRestaurantId(id: String, name: String? = null) {
+        prefs.edit().putString(SELECTED_RESTAURANT_ID, id).apply()
+        if (name != null) prefs.edit().putString(SELECTED_RESTAURANT_NAME, name).apply()
+        fun fetchLatitude(): Double? {
+            return prefs.getFloat(USER_LATITUDE, 0f).toDouble().takeIf { it != 0.0 }
+        }
+    }
     fun fetchLatitude(): Double? {
         return prefs.getFloat(USER_LATITUDE, 0f).toDouble().takeIf { it != 0.0 }
     }
@@ -47,8 +65,11 @@ class SessionManager(context: Context) {
         return prefs.getString(AUTH_TOKEN, null)
     }
 
-    fun fetchUserRole(): String? {
-        return prefs.getString(USER_ROLE, null)
+    fun fetchSelectedRestaurantId(): String? =
+        prefs.getString(SELECTED_RESTAURANT_ID, null)
+
+    fun clearSelectedRestaurantId() {
+        prefs.edit().remove(SELECTED_RESTAURANT_ID).remove(SELECTED_RESTAURANT_NAME).apply()
     }
 
     fun fetchUserEmail(): String? {
@@ -69,4 +90,5 @@ class SessionManager(context: Context) {
         editor.apply()
 
     }
+
 }
