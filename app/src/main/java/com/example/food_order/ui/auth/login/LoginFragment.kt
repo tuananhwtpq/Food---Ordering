@@ -64,7 +64,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                         if (isProfileComplete) {
                             navigateToMain(state.authResponse.role)
                             if (role.equals("owner", ignoreCase = true)) {
-                                onLoginSuccessOwnerFlow(role)   // hàm lấy list nhà hàng như bạn đã làm
+                                onLoginSuccessOwnerFlow(role)
                             } else {
                                 navigateToMain(role)
                             }
