@@ -148,17 +148,20 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
         // click Lưu:
         btnSave.setOnClickListener {
             val newName = etName.text.toString().trim()
-            val newPrice = etPrice.text.toString().toDoubleOrNull() ?: 0.0
-            val newDesc = etDescription.text.toString().trim().ifEmpty { null }
-            val newImg  = etImageUrl.text.toString().trim().ifEmpty { null }
 
-            if (newName.isBlank() || newPrice <= 0.0) {
+            val priceRaw = etPrice.text.toString().trim().replace(',', '.')
+            val newPrice = priceRaw.toDoubleOrNull()
+
+            val newDesc = etDescription.text.toString().trim().ifEmpty { "null"}
+            val newImg  = etImageUrl.text.toString().trim().ifEmpty { "null" }
+
+            if (newName.isBlank() || newPrice == null || newPrice <= 0.0) {
                 Toast.makeText(requireContext(), "Tên & giá phải hợp lệ", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (isCreate) {
-                // tạo mới
+                // tạo mới -> gửi MenuRequest ra Fragment
                 val req = MenuRequest(
                     restaurantId = restaurantId,
                     name = newName,
@@ -168,9 +171,10 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
                     arModelUrl = null
                 )
                 onCreate?.invoke(req)
-                dismiss() // đóng sheet sau khi gửi callback
+                dismiss() // đóng sheet ngay sau khi gửi callback
             } else {
-                // cập nhật
+                // cập nhật -> gửi MenuItem ra Fragment
+
                 val updated = MenuItem(
                     id = id,
                     restaurantId = restaurantId,
@@ -181,10 +185,13 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
                     arModelUrl = null,
                     createdAt = created
                 )
+
                 onSave?.invoke(updated)
                 dismiss()
             }
         }
+
+
 
         // click Xóa:
         btnDelete.setOnClickListener {
@@ -202,13 +209,11 @@ class MenuItemBottomSheet : BottomSheetDialogFragment(R.layout.fragment_bottomsh
 
     private fun setEditing(editing: Boolean) {
         listOf(etName, etPrice, etDescription, etImageUrl).forEach { it.isEnabled = editing }
-        // các ô readonly luôn khóa
         listOf(etIdReadOnly, etRestaurantIdReadOnly, etCreatedAtReadOnly).forEach { it.isEnabled = false }
-        // chỉ điều khiển visibility ở nơi gọi; hàm này chỉ lo enable/disable field
+
     }
 }
 
-/** Giữ lại extension submitList cho adapter hiện tại */
 fun MenuAdapter.submitList(items: List<MenuItem>) {
     this.submit(items)
 }

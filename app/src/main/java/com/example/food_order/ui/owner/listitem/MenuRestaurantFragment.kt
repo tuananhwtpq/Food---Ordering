@@ -121,22 +121,36 @@ class MenuRestaurantFragment : Fragment(R.layout.fragment_menu_restaurant) {
 
     private fun onItemClick(item: MenuItem) {
         val sheet = MenuItemBottomSheet.newInstance(item)
+
         sheet.onSave = { updated ->
+
+            val rid = when {
+                !updated.restaurantId.isNullOrBlank() -> updated.restaurantId!!
+                else -> viewModelRestaurantId()
+            }
             val req = MenuRequest(
                 name = updated.name,
                 description = updated.description,
                 price = updated.price,
                 imageUrl = updated.imageUrl,
-                restaurantId = updated.restaurantId,
-                arModelUrl = null
+                restaurantId = rid,
+                arModelUrl = null// có thể là null
             )
-            if (updated.id == null) {
-                viewModel.create(req)
-            } else {
-                viewModel.update(updated.id, req)
+            viewModel.update(updated.id!!, req) {
+                showToast("Đã lưu thay đổi")
+                sheet.dismiss()
+            }
+
+        }
+
+        sheet.onDelete = { id ->
+            viewModel.delete(id) {
+                showToast("Đã xoá món")
+                sheet.dismiss()
             }
         }
-        sheet.onDelete = { id -> viewModel.delete(id) }
+
         sheet.show(childFragmentManager, "menu_item_details")
     }
-}
+    }
+

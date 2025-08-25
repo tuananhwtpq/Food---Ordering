@@ -3,6 +3,7 @@ package com.example.food_order.di
 import android.content.Context
 import com.example.food_order.data.api.AuthApiService
 import com.example.food_order.data.api.AuthInterceptor
+import com.example.food_order.data.api.CategoryApiServices
 import com.example.food_order.data.api.MainApiService
 import com.example.food_order.di.AppModule_ProvideSessionManagerFactory.provideSessionManager
 import com.example.food_order.manager.SessionManager
@@ -59,5 +60,23 @@ object RetrofitInstance {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(T::class.java)
+
+    }
+
+    fun <T> create(context: Context, apiClass: Class<T>): T {
+        val sessionManager = SessionManager(context)
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(sessionManager))
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .build()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+
+        return retrofit.create(apiClass)
     }
 }
