@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_light_purple"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.customer.home.CustomerHomeFragment">
 
@@ -20,13 +21,13 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <!-- Danh mục -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Danh mục"
             android:textSize="18sp"
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -39,12 +40,12 @@
             tools:itemCount="5"
             tools:listitem="@layout/item_category" />
 
-        <!-- Nhà hàng nổi bật -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Nhà hàng nổi bật"
+            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -58,13 +59,13 @@
             tools:itemCount="3"
             tools:listitem="@layout/item_restaurant" />
 
-        <!-- Món ăn phổ biến -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Món ăn phổ biến"
             android:textSize="18sp"
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView

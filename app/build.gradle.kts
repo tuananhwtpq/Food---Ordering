@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt) // Thêm plugin kapt
     alias(libs.plugins.hilt.android)  // Thêm plugin Hilt
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -64,6 +65,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+
 
     // 5. Image Loading (Glide)
     implementation(libs.glide)

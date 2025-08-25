@@ -12,6 +12,15 @@
         <action
             android:id="@+id/action_customerHomeFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_customerHomeFragment_to_categoryDetailFragment"
+            app:destination="@id/categoryDetailFragment" />
+        <action
+            android:id="@+id/action_customerHomeFragment_to_popularItemDetailFragment"
+            app:destination="@id/popularItemDetailFragment" />
+        <action
+            android:id="@+id/action_customerHomeFragment_to_restaurantDetailFragment"
+            app:destination="@id/restaurantDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/cartFragment"
@@ -75,4 +84,30 @@
             android:id="@+id/action_menuRestaurantFragment_to_deliveryFragment"
             app:destination="@id/deliveryFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/categoryDetailFragment"
+        android:name="com.example.food_order.ui.customer.home.detail.categoryDetail.CategoryDetailFragment"
+        android:label="fragment_category_detail"
+        tools:layout="@layout/fragment_category_detail">
+
+        <argument
+            android:name="categoryId"
+            app:argType="string" />
+
+        <argument
+            android:name="categoryName"
+            app:argType="string" />
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/popularItemDetailFragment"
+        android:name="com.example.food_order.ui.customer.home.detail.popularItemDetail.PopularItemDetailFragment"
+        android:label="fragment_popular_item_detail"
+        tools:layout="@layout/fragment_popular_item_detail" />
+    <fragment
+        android:id="@+id/restaurantDetailFragment"
+        android:name="com.example.food_order.ui.customer.home.detail.restaurantDetail.RestaurantDetailFragment"
+        android:label="fragment_restaurant_detail"
+        tools:layout="@layout/fragment_restaurant_detail" />
 </navigation>

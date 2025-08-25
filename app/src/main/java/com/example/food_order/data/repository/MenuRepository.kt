@@ -26,8 +26,8 @@ data class MenuItem(
 interface IMenuRepository {
     suspend fun fetchMenu(restaurantId: String): AppResult<List<MenuItem>>
     suspend fun create(restaurantId: String, body: MenuRequest): AppResult<Unit>
-    suspend fun update(itemId: String, updatedFields: Map<String, Any?>): AppResult<Unit>
     suspend fun delete(itemId: String): AppResult<Unit>
+    suspend fun update(itemId: String, updatedFields: Map<String, Any?>): AppResult<Unit>
 }
 
 class MenuRepository(
