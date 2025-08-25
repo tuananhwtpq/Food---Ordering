@@ -88,7 +88,6 @@ class CartViewModel(
                 val request = PlaceOrderRequest(addressId = defaultAddress.id!!)
                 val orderResult = orderRepository.placeOrder(request)
 
-                // THAY ĐỔI 2: Nếu đặt hàng thành công, gọi lại getCartDetails()
                 if (orderResult.isSuccess) {
                     getCartDetails()
                 }

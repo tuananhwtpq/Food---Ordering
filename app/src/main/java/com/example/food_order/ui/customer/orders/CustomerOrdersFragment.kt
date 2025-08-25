@@ -1,11 +1,13 @@
 package com.example.food_order.ui.customer.orders
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.food_order.R
 import com.example.food_order.base_view.BaseFragment
 import com.example.food_order.data.api.OrderApiService
@@ -55,6 +57,18 @@ class CustomerOrdersFragment : BaseFragment<FragmentCustomerOrdersBinding>() {
                 ).show()
             }
         }
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("refreshOrders")
+            ?.observe(viewLifecycleOwner) { shouldRefresh ->
+                if (shouldRefresh) {
+                    viewModel.refreshOrderHistory()
+                    Log.d("CustomerOrdersFragment", "Order history refreshed")
+                    findNavController().currentBackStackEntry?.savedStateHandle?.set(
+                        "refreshOrders",
+                        false
+                    )
+                }
+            }
     }
 
     override fun initListener() {

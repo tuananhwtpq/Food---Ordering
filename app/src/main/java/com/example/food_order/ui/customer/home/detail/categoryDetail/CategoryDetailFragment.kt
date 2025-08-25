@@ -12,9 +12,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import com.example.food_order.R
 import com.example.food_order.base_view.BaseFragment
 import com.example.food_order.data.api.CategoryApiServices
 import com.example.food_order.data.api.RestaurantApiService
@@ -24,6 +26,7 @@ import com.example.food_order.databinding.FragmentCategoryDetailBinding
 import com.example.food_order.di.RetrofitInstance
 import com.example.food_order.ui.adapter.RestaurantListAdapter
 import com.example.food_order.utils.extension.launchOnStarted
+import com.example.food_order.utils.extension.safeNavigate
 import com.example.food_order.utils.extension.showToast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -46,7 +49,7 @@ class CategoryDetailFragment : BaseFragment<FragmentCategoryDetailBinding>() {
     }
 
     private val restaurantAdapter = RestaurantListAdapter { restaurant ->
-        showToast("Bạn đang chọn nhà hàng: ${restaurant.name}")
+        navigateToRestaurantDetail(restaurant.id)
     }
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -213,6 +216,13 @@ class CategoryDetailFragment : BaseFragment<FragmentCategoryDetailBinding>() {
 
     override fun onBack() {
         super.onBack()
+    }
+
+    private fun navigateToRestaurantDetail(restaurantId: String) {
+        val bundle = bundleOf(
+            "restaurantId" to restaurantId
+        )
+        safeNavigate(R.id.action_categoryDetailFragment_to_restaurantDetailFragment, bundle)
     }
 
 }

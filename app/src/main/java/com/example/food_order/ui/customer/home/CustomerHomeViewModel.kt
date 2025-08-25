@@ -63,8 +63,8 @@ class CustomerHomeViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
 
-            val lat = sessionManager.fetchLatitude() ?: 21.0278
-            val lon = sessionManager.fetchLongitude() ?: 105.8342
+            val lat = sessionManager.fetchLatitude() ?: 21.053731
+            val lon = sessionManager.fetchLongitude() ?: 105.7351068
 
             val categoriesResult = categoryRepository.getAllCategories()
             val restaurantsResult = restaurantRepository.getNearbyRestaurants(lat, lon)
