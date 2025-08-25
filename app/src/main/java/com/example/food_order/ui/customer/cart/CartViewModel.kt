@@ -29,8 +29,8 @@ class CartViewModel(
     private val _itemUpdateStatus = MutableLiveData<Result<Unit>>()
     val itemUpdateStatus: LiveData<Result<Unit>> = _itemUpdateStatus
 
-    private val _placeOrderStatus = MutableLiveData<Result<PlaceOrderResponse>>()
-    val placeOrderStatus: LiveData<Result<PlaceOrderResponse>> = _placeOrderStatus
+    private val _placeOrderStatus = MutableLiveData<Result<PlaceOrderResponse>?>()
+    val placeOrderStatus: LiveData<Result<PlaceOrderResponse>?> = _placeOrderStatus
 
 //    init {
 //        getCartDetails()
@@ -86,8 +86,13 @@ class CartViewModel(
 
                 val defaultAddress = addresses.first()
                 val request = PlaceOrderRequest(addressId = defaultAddress.id!!)
-
                 val orderResult = orderRepository.placeOrder(request)
+
+                // THAY ĐỔI 2: Nếu đặt hàng thành công, gọi lại getCartDetails()
+                if (orderResult.isSuccess) {
+                    getCartDetails()
+                }
+
                 _placeOrderStatus.postValue(orderResult)
 
             }.onFailure {
@@ -95,5 +100,9 @@ class CartViewModel(
             }
             _isLoading.postValue(false)
         }
+    }
+
+    fun onPlaceOrderShown() {
+        _placeOrderStatus.value = null
     }
 }

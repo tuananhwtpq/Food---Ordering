@@ -13,13 +13,20 @@
         <action
             android:id="@+id/action_loginFragment2_to_signupFragment2"
             app:destination="@id/signupFragment2" />
+        <action
+            android:id="@+id/action_loginFragment2_to_profileSetupFragment"
+            app:destination="@id/profileSetupFragment" />
 
     </fragment>
     <fragment
         android:id="@+id/signupFragment2"
         android:name="com.example.food_order.ui.auth.signup.SignupFragment"
         android:label="fragment_signup"
-        tools:layout="@layout/fragment_signup"></fragment>
+        tools:layout="@layout/fragment_signup">
+        <action
+            android:id="@+id/action_signupFragment2_to_profileSetupFragment"
+            app:destination="@id/profileSetupFragment" />
+    </fragment>
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.example.food_order.ui.auth.splash.SplashFragment"
@@ -29,4 +36,9 @@
             android:id="@+id/action_splashFragment_to_loginFragment2"
             app:destination="@id/loginFragment2" />
     </fragment>
+    <fragment
+        android:id="@+id/profileSetupFragment"
+        android:name="com.example.food_order.ui.auth.profile.ProfileSetupFragment"
+        android:label="fragment_profile_setup"
+        tools:layout="@layout/fragment_profile_setup" />
 </navigation>

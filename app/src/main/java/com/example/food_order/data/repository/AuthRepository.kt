@@ -12,7 +12,19 @@ class AuthRepository(
     private val sessionManager: SessionManager
 ) {
 
-    suspend fun signup(request: SignupRequest) = authApiService.signup(request)
+    suspend fun signup(request: SignupRequest): Result<AuthResponse> {
+        return try {
+            val response = authApiService.signup(request)
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!)
+            } else {
+                val errorMessage = response.errorBody()?.parseError()
+                Result.failure(Exception(errorMessage ?: "Signup failed"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
     suspend fun login(request: LoginRequest): Result<AuthResponse> {
         return try {

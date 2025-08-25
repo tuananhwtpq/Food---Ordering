@@ -83,14 +83,18 @@ class CartFragment : BaseFragment<FragmentCartBinding>() {
         }
 
         viewModel.placeOrderStatus.observe(viewLifecycleOwner) { result ->
-            result.onSuccess { response ->
-                Toast.makeText(
-                    context,
-                    "Đặt hàng thành công! Mã đơn hàng của bạn là #${response.id.take(8)}",
-                    Toast.LENGTH_LONG
-                ).show()
-            }.onFailure {
-                Toast.makeText(context, "Lỗi đặt hàng: ${it.message}", Toast.LENGTH_LONG).show()
+            result?.let {
+                it.onSuccess { response ->
+                    Toast.makeText(
+                        context,
+                        "Đặt hàng thành công! Mã đơn hàng của bạn là #${response.id.take(8)}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    viewModel.onPlaceOrderShown()
+                }.onFailure {
+                    Toast.makeText(context, "Lỗi đặt hàng: ${it.message}", Toast.LENGTH_LONG).show()
+                    viewModel.onPlaceOrderShown()
+                }
             }
         }
 

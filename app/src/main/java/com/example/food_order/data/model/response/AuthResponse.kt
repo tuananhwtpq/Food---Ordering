@@ -5,5 +5,6 @@ data class AuthResponse(
     val token: String,
     val role: String,
     val email: String,
-    val username: String
+    val username: String,
+    var isProfileComplete: Boolean
 )

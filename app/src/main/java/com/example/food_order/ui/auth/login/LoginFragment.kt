@@ -1,28 +1,21 @@
 package com.example.food_order.ui.auth.login
 
-import android.app.AlertDialog
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.example.food_order.MainApplication
 import com.example.food_order.R
 import com.example.food_order.base_view.BaseFragment
-import com.example.food_order.data.api.RestaurantApiService
 import com.example.food_order.data.model.request.LoginRequest
-import com.example.food_order.data.model.response.OwnerRestaurant
 import com.example.food_order.databinding.FragmentLoginBinding
-import com.example.food_order.di.RetrofitInstance
 import com.example.food_order.manager.SessionManager
 import com.example.food_order.ui.main.MainActivity
 import com.example.food_order.utils.extension.launchOnStarted
 import com.example.food_order.utils.extension.safeNavigate
 import com.example.food_order.utils.extension.showToast
 import com.example.food_order.utils.state.LoginUiState
-import kotlinx.coroutines.launch
 import kotlin.toString
 
 
@@ -57,14 +50,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     is LoginUiState.Success -> {
                         val role = state.authResponse.role
                         val token = state.authResponse.token
-
-                        // 🔴 LƯU TOKEN + ROLE TRƯỚC
                         SessionManager(requireContext()).saveAuthDetails(token, role)
 
-                        if (role.equals("owner", ignoreCase = true)) {
-                            onLoginSuccessOwnerFlow(role)   // hàm lấy list nhà hàng như bạn đã làm
+                        val isProfileComplete = state.authResponse.isProfileComplete
+
+                        if (isProfileComplete) {
+                            navigateToMain(state.authResponse.role)
                         } else {
-                            navigateToMain(role)
+                            navigateToProfileSetup()
                         }
                     }
 
@@ -113,7 +106,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         val request = LoginRequest(email, password, selectedRole)
         viewModel.loginUser(request)
     }
-
 
     private fun navigateToMain(userRole: String) {
         showToast("Đăng nhập thành công với vai trò: $userRole")
@@ -187,6 +179,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
             .show()
     }
 
+
+    private fun navigateToProfileSetup() {
+        showToast("Vui lòng hoàn tất hồ sơ của bạn")
+        safeNavigate(R.id.action_loginFragment2_to_profileSetupFragment)
+    }
 
 
 }
