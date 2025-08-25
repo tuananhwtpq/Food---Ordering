@@ -1,5 +1,6 @@
 package com.example.food_order.ui.customer.home.detail.restaurantDetail.restaurant_menu_item
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -90,6 +91,10 @@ class RestaurantMenuItemFragment : BaseFragment<FragmentRestaurantMenuItemBindin
             }
         }
 
+        viewModel.showClearCartDialog.observe(viewLifecycleOwner) { (restaurantId, menuItemId) ->
+            showClearCartConfirmationDialog(restaurantId, menuItemId)
+        }
+
     }
 
     override fun initListener() {
@@ -97,7 +102,6 @@ class RestaurantMenuItemFragment : BaseFragment<FragmentRestaurantMenuItemBindin
 
         binding.btnBack.setOnClickListener { onBack() }
 
-        // CẬP NHẬT: Gán sự kiện cho các nút
         binding.btnPlus.setOnClickListener {
             viewModel.incrementQuantity()
         }
@@ -107,12 +111,27 @@ class RestaurantMenuItemFragment : BaseFragment<FragmentRestaurantMenuItemBindin
         }
 
         binding.btnAddCart.setOnClickListener {
-            viewModel.addToCart(args.restaurantId, args.foodItemId)
+            viewModel.onAddToCartClicked(args.restaurantId, args.foodItemId)
         }
     }
 
     override fun onBack() {
         super.onBack()
+    }
+
+    private fun showClearCartConfirmationDialog(restaurantId: String, menuItemId: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Bắt đầu giỏ hàng mới?")
+            .setMessage("Giỏ hàng của bạn đang có món từ một nhà hàng khác. Bạn có muốn xóa giỏ hàng cũ và thêm món này không?")
+            .setPositiveButton("Đồng ý") { dialog, _ ->
+                viewModel.clearCartAndAddItem(restaurantId, menuItemId)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Hủy") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setCancelable(false)
+            .show()
     }
 
 }
