@@ -1,12 +1,15 @@
 package com.example.food_order.ui.customer.cart
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.food_order.R
 import com.example.food_order.base_view.BaseFragment
 import com.example.food_order.data.api.AddressApiService
@@ -18,6 +21,9 @@ import com.example.food_order.data.repository.OrderRepository
 import com.example.food_order.databinding.FragmentCartBinding
 import com.example.food_order.di.RetrofitInstance
 import com.example.food_order.ui.adapter.CartAdapter
+import com.example.food_order.utils.extension.safeNavigate
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -90,6 +96,13 @@ class CartFragment : BaseFragment<FragmentCartBinding>() {
                         "Đặt hàng thành công! Mã đơn hàng của bạn là #${response.id.take(8)}",
                         Toast.LENGTH_LONG
                     ).show()
+                    //findNavController().previousBackStackEntry?.savedStateHandle?.set("refreshOrders", true)
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        Log.d("CartFragment", "Waiting for 1.5s before navigating")
+                        delay(1500)
+                        safeNavigate(R.id.action_cartFragment_to_customerOrdersFragment)
+                        Log.d("CartFragment", "Navigated to CustomerOrdersFragment")
+                    }
                     viewModel.onPlaceOrderShown()
                 }.onFailure {
                     Toast.makeText(context, "Lỗi đặt hàng: ${it.message}", Toast.LENGTH_LONG).show()

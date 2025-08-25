@@ -120,7 +120,6 @@
                     android:layout_marginTop="8dp"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="16sp"
-                    android:visibility="gone"
                     tools:text="Địa chỉ: 123 Đường Láng, Hà Nội, Việt Nam" />
 
                 <!-- Order Total -->
