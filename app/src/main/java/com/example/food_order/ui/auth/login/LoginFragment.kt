@@ -61,7 +61,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
                         val isProfileComplete = state.authResponse.isProfileComplete
 
-                        if (isProfileComplete) {
+                        if (isProfileComplete && role.equals("Customer",ignoreCase = true)) {
                             navigateToMain(state.authResponse.role)
                             if (role.equals("owner", ignoreCase = true)) {
                                 onLoginSuccessOwnerFlow(role)
