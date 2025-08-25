@@ -32,7 +32,7 @@ class MenuAdapter(
             }
 
             // Giá VNĐ
-            val us = NumberFormat.getCurrencyInstance(Locale("vi", "US"))
+            val us = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
             tvPrice.text = us.format(item.price)
 
             // Ảnh

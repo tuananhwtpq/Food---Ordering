@@ -31,7 +31,7 @@ class OrderListAdapter(
             tvAddress.text  = "Địa chỉ: ${order.address ?: "-"}"
             tvNote.text     = if (order.note.isNullOrBlank()) "Ghi chú: -" else "Ghi chú: ${order.note}"
 
-            val vnd = NumberFormat.getCurrencyInstance(Locale("vi", "US"))
+            val vnd = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
             tvTotal.text = vnd.format(order.total ?: 0L)
             tvTime.text  = order.timeText ?: "" // hoặc format lại thời gian nếu cần
 

@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.food_order.data.repository.OrderListSource.OrderSimple
 import com.example.food_order.databinding.ItemOrderBinding
+import java.text.NumberFormat
+import java.util.Locale
 
 class OwnerOrdersAdapter(
     private val data: MutableList<OrderSimple>,
@@ -28,7 +30,8 @@ class OwnerOrdersAdapter(
         tvCustomer.text = "Khách: ${order.customer}"
         tvAddress.text = "Địa chỉ: ${order.address}"
         tvNote.text = "Ghi chú: ${order.note}"
-        tvTotal.text = "${order.total}$"
+        val us = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
+        tvTotal.text = us.format(order.total)
         tvTime.text = order.timeText
 
         // Nested list các món
