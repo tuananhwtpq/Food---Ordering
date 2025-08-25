@@ -47,11 +47,16 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
                 when (state) {
                     is LoginUiState.Success -> {
-                        navigateToMain(state.authResponse.role)
+                        val isProfileComplete = state.authResponse.isProfileComplete
+
+                        if (isProfileComplete) {
+                            navigateToMain(state.authResponse.role)
+                        } else {
+                            navigateToProfileSetup()
+                        }
                     }
 
                     is LoginUiState.Error -> {
-                        //binding.passwordLayout.error = state.message
                         binding.errorTxt.isVisible = true
                         binding.errorTxt.text = state.message
                     }
@@ -103,6 +108,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         }
         startActivity(intent)
         requireActivity().finish()
+    }
+
+    private fun navigateToProfileSetup() {
+        showToast("Vui lòng hoàn tất hồ sơ của bạn")
+        safeNavigate(R.id.action_loginFragment2_to_profileSetupFragment)
     }
 
 

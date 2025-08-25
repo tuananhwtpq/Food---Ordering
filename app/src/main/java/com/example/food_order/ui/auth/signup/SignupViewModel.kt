@@ -21,21 +21,13 @@ class SignupViewModel(
     fun signupUser(request: SignupRequest) {
         viewModelScope.launch {
             _signupUiState.value = SignupUiState.Loading
-            try {
-                val response = authRepository.signup(request)
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        //sessionManager.saveAuthDetails(it.token, it.role, it.userId)
-                        _signupUiState.value = SignupUiState.Success(it)
-                    } ?: run {
-                        _signupUiState.value = SignupUiState.Error("Response body is null")
-                    }
-                } else {
-                    val errorMsg = "Đăng ký thất bại: Email đã tồn tại (Code ${response.code()})"
-                    _signupUiState.value = SignupUiState.Error(errorMsg)
-                }
-            } catch (e: Exception) {
-                _signupUiState.value = SignupUiState.Error(e.message ?: "Đã có lỗi xảy ra")
+
+            val result = authRepository.signup(request)
+
+            result.onSuccess { authResponse ->
+                _signupUiState.value = SignupUiState.Success(authResponse)
+            }.onFailure { exception ->
+                _signupUiState.value = SignupUiState.Error(exception.message ?: "Đã có lỗi xảy ra")
             }
         }
     }

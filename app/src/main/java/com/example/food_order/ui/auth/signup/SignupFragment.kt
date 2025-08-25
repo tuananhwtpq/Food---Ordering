@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.food_order.MainApplication
 import com.example.food_order.R
 import com.example.food_order.base_view.BaseFragment
@@ -15,6 +16,7 @@ import com.example.food_order.data.model.request.SignupRequest
 import com.example.food_order.databinding.FragmentSignupBinding
 import com.example.food_order.ui.main.MainActivity
 import com.example.food_order.utils.extension.launchOnStarted
+import com.example.food_order.utils.extension.safeNavigate
 import com.example.food_order.utils.extension.showToast
 import com.example.food_order.utils.state.SignupUiState
 import com.google.gson.Gson
@@ -50,15 +52,13 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>() {
 
         launchOnStarted {
             viewModel.signupUiState.collect { state ->
-                // binding.loadingView.isVisible = state is SignupUiState.Loading
 
                 when (state) {
                     is SignupUiState.Success -> {
-                        navigateToMain(state.authResponse.role)
+                        navigateToLogin()
                     }
 
                     is SignupUiState.Error -> {
-
                         showToast(state.message)
                     }
 
@@ -114,13 +114,23 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>() {
         viewModel.signupUser(request)
     }
 
-    private fun navigateToMain(userRole: String) {
-        showToast("Đăng ký thành công với vai trò: $userRole")
-        val intent = Intent(requireActivity(), MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra("USER_ROLE", userRole)
-        }
-        startActivity(intent)
+//    private fun navigateToMain(userRole: String) {
+//        showToast("Đăng ký thành công với vai trò: $userRole")
+//        val intent = Intent(requireActivity(), MainActivity::class.java).apply {
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//            putExtra("USER_ROLE", userRole)
+//        }
+//        startActivity(intent)
+//    }
+
+    private fun navigateToProfileSetup() {
+        showToast("Đăng ký thành công! Vui lòng hoàn tất hồ sơ của bạn.")
+        safeNavigate(R.id.action_signupFragment2_to_profileSetupFragment)
+    }
+
+    private fun navigateToLogin() {
+        showToast("Đăng ký thành công! Vui lòng đăng nhập lại.")
+        findNavController().popBackStack()
     }
 
 
