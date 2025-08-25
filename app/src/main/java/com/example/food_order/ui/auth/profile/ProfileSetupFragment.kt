@@ -25,7 +25,7 @@ class ProfileSetupFragment : BaseFragment<FragmentProfileSetupBinding>() {
     private val viewModel: ProfileSetupViewModel by viewModels {
         val apiService = RetrofitInstance.create(requireContext(), AddressApiService::class.java)
         val repository = AddressRepository(apiService)
-        ProfileSetupViewModelFactory(repository, sessionManager)
+        ProfileSetupViewModelFactory(repository)
     }
 
     private lateinit var sessionManager: SessionManager
@@ -53,15 +53,15 @@ class ProfileSetupFragment : BaseFragment<FragmentProfileSetupBinding>() {
         }
 
         viewModel.saveStatus.observe(viewLifecycleOwner) { result ->
-            result.onSuccess { response ->
-                Toast.makeText(context, response.message, Toast.LENGTH_SHORT).show()
+            result.onSuccess {
+                Toast.makeText(context, "Lưu thông tin thành công!", Toast.LENGTH_SHORT).show()
                 navigateToMain()
-            }.onFailure { exception ->
-                Toast.makeText(context, "Lỗi: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }.onFailure {
+                Toast.makeText(context, "Lỗi: ${it.message}", Toast.LENGTH_SHORT).show()
             }
         }
-    }
 
+    }
 
     override fun initListener() {
         super.initListener()
@@ -80,9 +80,7 @@ class ProfileSetupFragment : BaseFragment<FragmentProfileSetupBinding>() {
                 city = "Hanoi",
                 state = "Hanoi",
                 zipCode = "100000",
-                country = "Vietnam",
-                latitude = sessionManager.fetchLatitude(),
-                longitude = sessionManager.fetchLongitude()
+                country = "Vietnam"
             )
         }
     }

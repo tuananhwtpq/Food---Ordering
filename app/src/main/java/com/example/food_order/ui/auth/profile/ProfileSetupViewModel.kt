@@ -5,18 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.food_order.data.model.common.Address
-import com.example.food_order.data.model.common.AddressResponse
 import com.example.food_order.data.repository.AddressRepository
-import com.example.food_order.manager.SessionManager
 import kotlinx.coroutines.launch
 
 class ProfileSetupViewModel(
-    private val addressRepository: AddressRepository,
-    private val sessionManager: SessionManager
+    private val addressRepository: AddressRepository
 ) : ViewModel() {
 
-    private val _saveStatus = MutableLiveData<Result<AddressResponse>>()
-    val saveStatus: LiveData<Result<AddressResponse>> = _saveStatus
+    private val _saveStatus = MutableLiveData<Result<Unit>>()
+    val saveStatus: LiveData<Result<Unit>> = _saveStatus
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -26,33 +23,24 @@ class ProfileSetupViewModel(
         city: String,
         state: String,
         zipCode: String,
-        country: String,
-        latitude: Double?,
-        longitude: Double?
+        country: String
     ) {
         viewModelScope.launch {
             _isLoading.postValue(true)
             val address = Address(
                 id = null,
-                userId = sessionManager.fetchUserId(),
+                userId = null,
                 addressLine1 = addressLine1,
                 addressLine2 = null,
                 city = city,
                 state = state,
                 zipCode = zipCode,
                 country = country,
-                latitude = latitude,
-                longitude = longitude
+                latitude = null,
+                longitude = null
             )
             val result = addressRepository.addAddress(address)
             _saveStatus.postValue(result)
-
-            result.onSuccess { response ->
-                sessionManager.saveAddressId(response.id)
-                android.util.Log.d("ProfileSetupViewModel", "Đã lưu addressId: ${response.id}")
-            }.onFailure { e ->
-                android.util.Log.e("ProfileSetupViewModel", "Lỗi thêm địa chỉ: ${e.message}")
-            }
             _isLoading.postValue(false)
         }
     }
