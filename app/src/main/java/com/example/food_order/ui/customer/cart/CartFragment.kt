@@ -9,8 +9,12 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.example.food_order.R
 import com.example.food_order.base_view.BaseFragment
+import com.example.food_order.data.api.AddressApiService
 import com.example.food_order.data.api.CartApiService
+import com.example.food_order.data.api.OrderApiService
+import com.example.food_order.data.repository.AddressRepository
 import com.example.food_order.data.repository.CartRepository
+import com.example.food_order.data.repository.OrderRepository
 import com.example.food_order.databinding.FragmentCartBinding
 import com.example.food_order.di.RetrofitInstance
 import com.example.food_order.ui.adapter.CartAdapter
@@ -21,9 +25,16 @@ import java.util.Locale
 class CartFragment : BaseFragment<FragmentCartBinding>() {
 
     private val viewModel: CartViewModel by viewModels {
-        val apiService = RetrofitInstance.create(requireContext(), CartApiService::class.java)
-        val repository = CartRepository(apiService)
-        CartViewModelFactory(repository)
+        val cartApiService = RetrofitInstance.create(requireContext(), CartApiService::class.java)
+        val addressApiService =
+            RetrofitInstance.create(requireContext(), AddressApiService::class.java)
+        val orderApiService = RetrofitInstance.create(requireContext(), OrderApiService::class.java)
+
+        val cartRepo = CartRepository(cartApiService)
+        val addressRepo = AddressRepository(addressApiService)
+        val orderRepo = OrderRepository(orderApiService)
+
+        CartViewModelFactory(cartRepo, addressRepo, orderRepo)
     }
 
     private lateinit var cartAdapter: CartAdapter
@@ -71,10 +82,24 @@ class CartFragment : BaseFragment<FragmentCartBinding>() {
             }
         }
 
+        viewModel.placeOrderStatus.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { response ->
+                Toast.makeText(
+                    context,
+                    "Đặt hàng thành công! Mã đơn hàng của bạn là #${response.id.take(8)}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }.onFailure {
+                Toast.makeText(context, "Lỗi đặt hàng: ${it.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+
     }
 
     override fun initListener() {
         super.initListener()
+
+        binding.btnCheckout.setOnClickListener { viewModel.placeOrder() }
 
     }
 
