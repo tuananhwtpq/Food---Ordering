@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.kapt) // Thêm plugin kapt
     alias(libs.plugins.hilt.android)  // Thêm plugin Hilt
     id("androidx.navigation.safeargs.kotlin")
-    alias(libs.plugins.kotlin.serialization)
 
 }
 
@@ -76,7 +75,6 @@ dependencies {
     // 5. Image Loading (Glide)
     implementation(libs.glide)
 
-    implementation(libs.kotlinx.serialization.json)
 
     // 6. Dependency Injection (Hilt)
     implementation(libs.hilt.android)
