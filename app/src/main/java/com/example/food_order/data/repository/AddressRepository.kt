@@ -2,6 +2,7 @@ package com.example.food_order.data.repository
 
 import com.example.food_order.data.api.AddressApiService
 import com.example.food_order.data.model.common.Address
+import com.example.food_order.data.model.common.AddressResponse
 import com.example.food_order.data.model.common.ReverseGeocodeRequest
 import com.example.food_order.utils.extension.parseError
 
@@ -25,11 +26,11 @@ class AddressRepository(
         }
     }
 
-    suspend fun addAddress(address: Address): Result<Unit> {
+    suspend fun addAddress(address: Address): Result<AddressResponse> {
         return try {
             val response = apiService.addAddress(address)
-            if (response.isSuccessful) {
-                Result.success(Unit)
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!)
             } else {
                 Result.failure(Exception(response.errorBody()?.parseError() ?: "Lỗi thêm địa chỉ"))
             }

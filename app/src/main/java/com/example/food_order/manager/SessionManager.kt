@@ -16,6 +16,7 @@ class SessionManager(context: Context) {
         const val USER_NAME = "user_name"
         const val USER_LATITUDE = "user_latitude"
         const val USER_LONGITUDE = "user_longitude"
+        const val ADDRESS_ID = "address_id"
     }
 
     fun saveAuthDetails(authResponse: AuthResponse) {
@@ -26,6 +27,16 @@ class SessionManager(context: Context) {
         editor.putString(USER_EMAIL, authResponse.email)
         editor.putString(USER_NAME, authResponse.username)
         editor.apply()
+    }
+
+    fun saveAddressId(addressId: String) {
+        val editor = prefs.edit()
+        editor.putString(ADDRESS_ID, addressId)
+        editor.apply()
+    }
+
+    fun fetchAddressId(): String? {
+        return prefs.getString(ADDRESS_ID, null)
     }
 
     fun saveLocation(latitude: Double, longitude: Double) {

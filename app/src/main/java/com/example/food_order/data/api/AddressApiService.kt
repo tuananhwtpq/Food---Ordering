@@ -1,6 +1,7 @@
 package com.example.food_order.data.api
 
 import com.example.food_order.data.model.common.Address
+import com.example.food_order.data.model.common.AddressResponse
 import com.example.food_order.data.model.common.ReverseGeocodeRequest
 import com.example.food_order.data.model.response.BaseResponse
 import retrofit2.Response
@@ -16,7 +17,7 @@ interface AddressApiService {
     suspend fun getAddresses(): Response<BaseResponse<List<Address>>>
 
     @POST("addresses")
-    suspend fun addAddress(@Body address: Address): Response<Unit>
+    suspend fun addAddress(@Body address: Address): Response<AddressResponse>
 
     @PUT("addresses/{id}")
     suspend fun updateAddress(@Path("id") addressId: String, @Body address: Address): Response<Unit>

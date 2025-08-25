@@ -1,16 +1,19 @@
 package com.example.food_order.ui.customer.orders
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import com.example.food_order.R
 import com.example.food_order.base_view.BaseFragment
 import com.example.food_order.data.api.OrderApiService
 import com.example.food_order.data.repository.OrderRepository
 import com.example.food_order.databinding.FragmentCustomerOrdersBinding
 import com.example.food_order.di.RetrofitInstance
 import com.example.food_order.ui.adapter.OrderHistoryAdapter
+import com.example.food_order.utils.extension.safeNavigate
 
 class CustomerOrdersFragment : BaseFragment<FragmentCustomerOrdersBinding>() {
 
@@ -64,12 +67,10 @@ class CustomerOrdersFragment : BaseFragment<FragmentCustomerOrdersBinding>() {
 
     private fun setupRecyclerView() {
         orderAdapter = OrderHistoryAdapter { order ->
-            Toast.makeText(
-                context,
-                "Xem chi tiết đơn hàng: ${order.id.take(8)}",
-                Toast.LENGTH_SHORT
-            ).show()
-            // findNavController().navigate(...)
+            val bundle = Bundle().apply {
+                putString("orderId", order.id)
+            }
+            safeNavigate(R.id.action_customerOrdersFragment_to_orderDetailFragment, bundle)
         }
         binding.rvOrders.adapter = orderAdapter
     }

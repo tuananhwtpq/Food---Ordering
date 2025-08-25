@@ -5,56 +5,100 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.food_order.R
+import com.example.food_order.base_view.BaseFragment
+import com.example.food_order.data.api.OrderApiService
+import com.example.food_order.data.model.common.Order
+import com.example.food_order.data.repository.OrderRepository
+import com.example.food_order.databinding.FragmentOrderDetailBinding
+import com.example.food_order.di.RetrofitInstance
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [OrderDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class OrderDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class OrderDetailFragment : BaseFragment<FragmentOrderDetailBinding>() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private val args: OrderDetailFragmentArgs by navArgs()
+
+    private val viewModel: OrderDetailViewModel by viewModels {
+        val apiService = RetrofitInstance.create(requireContext(), OrderApiService::class.java)
+        val repository = OrderRepository(apiService)
+        OrderDetailViewModelFactory(
+            repository,
+            args.orderId
+        )
+    }
+
+    override fun getViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentOrderDetailBinding {
+        return FragmentOrderDetailBinding.inflate(inflater, container, false)
+    }
+
+    override fun setupView() {
+        super.setupView()
+        binding.toolbar.title = "Chi tiết đơn hàng"
+    }
+
+    override fun observeData() {
+        super.observeData()
+        viewModel.order.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { order ->
+                displayOrderDetails(order)
+                binding.tvError.visibility = View.GONE
+            }
+            result.onFailure { exception ->
+                binding.tvError.text = exception.message
+                binding.tvError.visibility = View.VISIBLE
+                binding.contentLayout.visibility = View.GONE
+            }
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.contentLayout.visibility = if (isLoading) View.GONE else View.VISIBLE
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_order_detail, container, false)
+    private fun displayOrderDetails(order: Order) {
+        binding.tvRestaurantName.text = order.restaurant?.name ?: "Không rõ nhà hàng"
+        binding.tvOrderStatus.text = "Trạng thái: ${order.status}"
+        binding.tvPaymentStatus.text = "Thanh toán: ${order.paymentStatus}"
+
+        val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        val formatter = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
+        try {
+            val date = parser.parse(order.createdAt)
+            binding.tvOrderDate.text = "Ngày đặt: ${formatter.format(date)}"
+        } catch (e: Exception) {
+            binding.tvOrderDate.text = "Ngày đặt: ${order.createdAt.take(10)}"
+        }
+
+        val currencyFormatter = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
+        binding.tvOrderTotal.text = "Tổng cộng: ${currencyFormatter.format(order.totalAmount)}"
+
+        binding.tvOrderItems.text = order.items.joinToString("\n") {
+            "${it.menuItemName} x${it.quantity}"
+        }
+
+        binding.tvAddress.text = order.address?.let {
+            "${it.addressLine1}, ${it.city}, ${it.country}"
+        } ?: "Không có thông tin địa chỉ"
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment OrderDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            OrderDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun initListener() {
+        super.initListener()
+        binding.toolbar.setNavigationOnClickListener {
+            onBack()
+        }
+    }
+
+    override fun onBack() {
+        findNavController().navigateUp()
     }
 }
