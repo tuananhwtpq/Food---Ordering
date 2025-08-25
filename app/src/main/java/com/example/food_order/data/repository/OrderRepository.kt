@@ -5,6 +5,7 @@ import com.example.food_order.data.model.common.Order
 import com.example.food_order.data.model.common.PlaceOrderRequest
 import com.example.food_order.data.model.common.PlaceOrderResponse
 import com.example.food_order.data.model.common.UpdateOrderStatusRequest
+import com.example.food_order.data.model.response.OrderResponse
 import com.example.food_order.utils.extension.parseError
 
 class OrderRepository(

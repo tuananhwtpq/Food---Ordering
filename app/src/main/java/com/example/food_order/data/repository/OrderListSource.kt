@@ -4,6 +4,7 @@ class OrderListSource {
     data class OrderSimple(
         val id: String,
         val status: OrderStatus,          // "PENDING", "ACCEPTED", ...
+        val restaurantId: String?,
         val customer: String?,
         val items: List<OrderItem>,// có thể null
         val address: String?,

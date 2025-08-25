@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.food_order.data.repository.OrderListSource
 import com.example.food_order.data.repository.OrderListSource.OrderStatus
 import com.example.food_order.databinding.FragmentDeliveryBinding
+import com.example.food_order.manager.SessionManager
 import com.example.food_order.ui.orders.OrdersSharedVMFactory
 import com.example.food_order.ui.orders.OrdersSharedViewModel
 import com.example.food_order.ui.owner.adapter.ListDeliveryAdapter
@@ -36,10 +38,16 @@ class DeliveryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecycler()
         setupFilterClicks()
+        val resId = SessionManager(requireContext())
+            .fetchSelectedRestaurantId()
+        if (resId.isNullOrBlank()) {
+            Toast.makeText(context,"Ban chua chon nha hang", Toast.LENGTH_SHORT).show()
+            return
+        }
         ordersVM.delivery.observe(viewLifecycleOwner) { all ->
             applyFilterAndShow(all)
         }
-        ordersVM.refresh()
+        ordersVM.refresh(resId)
     }
 
     private fun setupRecycler() {

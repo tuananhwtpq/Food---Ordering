@@ -16,6 +16,7 @@ object OrderDemoStore {
         OrderSimple(
             id = "A1001",
             status = OrderStatus.PENDING_ACCEPTANCE,
+            restaurantId = "R1001",
             customer = "Nguyễn Văn A",
             items = listOf(OrderItem("Phở bò", 2), OrderItem("Trà chanh", 1)),
             address = "12 Nguyễn Trãi, Hà Nội",
@@ -26,6 +27,7 @@ object OrderDemoStore {
         OrderSimple(
             id = "A1002",
             status = OrderStatus.PENDING_ACCEPTANCE,
+            restaurantId = "R1001",
             customer = "Trần Thị B",
             items = listOf(OrderItem("Bún chả", 1)),
             address = "56 Hai Bà Trưng, HN",
@@ -36,6 +38,7 @@ object OrderDemoStore {
         OrderSimple(
             id = "A0999",
             status = OrderStatus.OUT_FOR_DELIVERY,
+            restaurantId = "R1001",
             customer = "Lê C",
             items = listOf(OrderItem("Cơm gà", 1), OrderItem("Coca", 1)),
             address = "23 Láng Hạ, HN",
@@ -46,6 +49,7 @@ object OrderDemoStore {
         OrderSimple(
             id = "A0998",
             status = OrderStatus.DELIVERED,
+            restaurantId = "R1001",
             customer = "Phạm D",
             items = listOf(OrderItem("Bánh mì", 3)),
             address = "1 Kim Mã, HN",

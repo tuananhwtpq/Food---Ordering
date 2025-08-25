@@ -52,9 +52,20 @@ class OrdersRepository private constructor(
             Result.failure(e)
         }
     }
-}
+    suspend fun getOwnerOrders(status: String? = null): AppResult<List<OrderResponse>> {
+        return try {
+            val resp = service.getOwnerOrders(status)
+            if (resp.isSuccessful) {
+                AppResult.Success(resp.body()?.orders.orEmpty())
+            } else {
+                AppResult.Failure(resp.code(), resp.errorBody()?.string())
+            }
+        } catch (e: Exception) {
+            AppResult.Failure(null, e.message)
+        }
+    }
 
-/** Map network DTO -> UI model sẵn dùng trong adapter hiện tại (OwnerOrdersAdapter, ListDeliveryAdapter). */
+}/** Map network DTO -> UI model sẵn dùng trong adapter hiện tại (OwnerOrdersAdapter, ListDeliveryAdapter). */
 private fun OrderResponse.toUi(): OrderSimple {
     val customerName = "User " + userId.take(8)  // BE chưa có tên khách -> hiển thị gọn
     val prettyAddress = listOfNotNull(address?.addressLine1, address?.city).joinToString(", ")
@@ -62,6 +73,7 @@ private fun OrderResponse.toUi(): OrderSimple {
     return OrderSimple(
         id = id,
         status = runCatching { OrderStatus.valueOf(status) }.getOrElse { OrderStatus.PENDING_ACCEPTANCE },
+        restaurantId = restaurantId,
         customer = customerName,
         items = itemsUi,
         address = prettyAddress.ifBlank { null },

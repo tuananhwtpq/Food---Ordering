@@ -21,12 +21,12 @@ class OrdersSharedViewModel(
     val delivery: LiveData<MutableList<OrderSimple>> = _delivery
 
     /** Gọi ở onViewCreated của 2 màn để load data thật */
-    fun refresh() {
+    fun refresh(rid: String) {
         viewModelScope.launch {
             repo.getOwnerOrders()
                 .onSuccess { list ->
-                    val a = list.filter { it.status == OrderStatus.PENDING_ACCEPTANCE }
-                    val b = list.filter { it.status != OrderStatus.PENDING_ACCEPTANCE }
+                    val a = list.filter { it.status == OrderStatus.PENDING_ACCEPTANCE && it.restaurantId == rid }
+                    val b = list.filter { it.status != OrderStatus.PENDING_ACCEPTANCE && it.restaurantId == rid }
                     _pending.value = a.toMutableList()
                     _delivery.value = b.toMutableList()
                 }
