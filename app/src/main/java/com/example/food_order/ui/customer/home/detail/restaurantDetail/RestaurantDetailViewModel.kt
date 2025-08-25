@@ -27,16 +27,23 @@ class RestaurantDetailViewModel(
             val detailResult = detailDeferred.await()
             val menuResult = menuDeferred.await()
 
-            detailResult.onSuccess { restaurant ->
-                menuResult.onSuccess { menu ->
-                    _uiState.update {
-                        it.copy(isLoading = false, restaurant = restaurant, menuItems = menu)
-                    }
-                }.onFailure {
-                    _uiState.update { it.copy(isLoading = false, error = it.error) }
-                }
-            }.onFailure {
-                _uiState.update { it.copy(isLoading = false, error = it.error) }
+            var finalError: String? = null
+
+            detailResult.onFailure {
+                finalError = it.message ?: "Không thể tải thông tin nhà hàng"
+            }
+
+            menuResult.onFailure {
+                //finalError = it.message ?: "Không thể tải menu"
+            }
+
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    restaurant = detailResult.getOrNull(),
+                    menuItems = menuResult.getOrDefault(emptyList()),
+                    error = finalError
+                )
             }
         }
     }

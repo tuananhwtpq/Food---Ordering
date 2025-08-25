@@ -71,4 +71,26 @@ class RestaurantRepository(
         }
     }
 
+
+    suspend fun getMenuItemDetails(menuItemId: String): Result<MenuItem> {
+        return try {
+            val response = apiService.getMenuItemDetails(menuItemId)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body?.data != null) {
+                    Result.success(body.data)
+                } else {
+                    Result.failure(Exception("Response body or data is null for menu item"))
+                }
+            } else {
+                val errorMessage = response.errorBody()?.parseError()
+                Result.failure(
+                    Exception(errorMessage ?: "API call failed with code: ${response.code()}")
+                )
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 }

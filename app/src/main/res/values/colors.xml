@@ -23,4 +23,5 @@
     <color name="profile_text_color">#191227</color>
     <color name="all_background">#F9F5FF</color>
     <color name="hint_color">#A19FA4</color>
+    <color name="orange">#F49F21</color>
 </resources>

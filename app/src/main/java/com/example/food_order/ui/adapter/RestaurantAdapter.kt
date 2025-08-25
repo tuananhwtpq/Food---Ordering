@@ -1,5 +1,6 @@
 package com.example.food_order.ui.adapter
 
+import android.icu.text.DecimalFormat
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,14 @@ class RestaurantAdapter(
             val formattedRating = String.format("%.1f", randomRating)
 
             binding.tvRestaurantRating.text = "⭐ $formattedRating"
+
+            restaurant.distance?.let { distance ->
+                val df = DecimalFormat("#.#")
+                binding.tvRestaurantDistance.text = "${df.format(distance)} km"
+            } ?: run {
+                binding.tvRestaurantDistance.text = ""
+            }
+
             Glide.with(binding.root.context)
                 .load(restaurant.imageUrl)
                 .placeholder(R.drawable.loading)

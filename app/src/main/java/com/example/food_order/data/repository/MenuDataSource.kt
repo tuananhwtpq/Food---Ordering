@@ -1,6 +1,8 @@
 package com.example.food_order.data.repository
 
+import android.annotation.SuppressLint
 import com.example.food_order.data.repository.FakeMenuRepository.memory
+import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
 import kotlin.math.absoluteValue
 import java.time.OffsetDateTime
@@ -11,6 +13,8 @@ import java.util.Locale
 import java.util.TimeZone
 
 // ========================== DATA CLASS ==========================
+@SuppressLint("UnsafeOptInUsageError")
+@Serializable
 data class MenuItem(
     val id: String? = null,
     val restaurantId: String,

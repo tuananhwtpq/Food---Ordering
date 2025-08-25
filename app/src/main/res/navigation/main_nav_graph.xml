@@ -119,6 +119,20 @@
         <argument
             android:name="restaurantId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_restaurantDetailFragment_to_restaurantMenuItemFragment"
+            app:destination="@id/restaurantMenuItemFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/restaurantMenuItemFragment"
+        android:name="com.example.food_order.ui.customer.home.detail.restaurantDetail.restaurant_menu_item.RestaurantMenuItemFragment"
+        android:label="fragment_restaurant_menu_item"
+        tools:layout="@layout/fragment_restaurant_menu_item">
+
+        <argument
+            android:name="foodItemId"
+            app:argType="string" />
 
     </fragment>
 </navigation>

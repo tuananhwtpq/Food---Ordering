@@ -13,6 +13,9 @@ class SessionManager(context: Context) {
         const val USER_ROLE = "user_role"
         const val USER_ID = "user_id"
         const val USER_EMAIL = "user_email"
+        const val USER_NAME = "user_name"
+        const val USER_LATITUDE = "user_latitude"
+        const val USER_LONGITUDE = "user_longitude"
     }
 
     fun saveAuthDetails(authResponse: AuthResponse) {
@@ -21,7 +24,23 @@ class SessionManager(context: Context) {
         editor.putString(USER_ROLE, authResponse.role)
         editor.putString(USER_ID, authResponse.userId)
         editor.putString(USER_EMAIL, authResponse.email)
+        editor.putString(USER_NAME, authResponse.username)
         editor.apply()
+    }
+
+    fun saveLocation(latitude: Double, longitude: Double) {
+        val editor = prefs.edit()
+        editor.putFloat(USER_LATITUDE, latitude.toFloat())
+        editor.putFloat(USER_LONGITUDE, longitude.toFloat())
+        editor.apply()
+    }
+
+    fun fetchLatitude(): Double? {
+        return prefs.getFloat(USER_LATITUDE, 0f).toDouble().takeIf { it != 0.0 }
+    }
+
+    fun fetchLongitude(): Double? {
+        return prefs.getFloat(USER_LONGITUDE, 0f).toDouble().takeIf { it != 0.0 }
     }
 
     fun fetchAuthToken(): String? {
@@ -34,6 +53,14 @@ class SessionManager(context: Context) {
 
     fun fetchUserEmail(): String? {
         return prefs.getString(USER_EMAIL, null)
+    }
+
+    fun fetchUserId(): String? {
+        return prefs.getString(USER_ID, null)
+    }
+
+    fun fetchUserName(): String? {
+        return prefs.getString(USER_NAME, null)
     }
 
     fun clearSession() {

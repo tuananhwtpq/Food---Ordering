@@ -26,4 +26,10 @@ interface RestaurantApiService {
         @Query("lon") longitude: Double,
         @Query("categoryId") categoryId: String? = null
     ): Response<BaseResponse<List<Restaurant>>>
+
+    @GET("menu/{itemId}")
+    suspend fun getMenuItemDetails(
+        @Path("itemId") menuItemId: String
+    ): Response<BaseResponse<MenuItem>>
+
 }
