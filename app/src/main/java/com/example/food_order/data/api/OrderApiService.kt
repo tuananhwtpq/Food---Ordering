@@ -22,5 +22,4 @@ interface OrderApiService {
     @GET("orders/{id}")
     suspend fun getOrderDetails(@Path("id") orderId: String): Response<Order>
 
-
 }
