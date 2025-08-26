@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.food_order.data.model.common.Order
 import com.example.food_order.data.repository.OrderRepository
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class OrderDetailViewModel(
@@ -19,8 +21,10 @@ class OrderDetailViewModel(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private var pollingJob: Job? = null
+
     init {
-        getOrderDetails()
+        startPolling()
     }
 
     private fun getOrderDetails() {
@@ -31,4 +35,28 @@ class OrderDetailViewModel(
             _isLoading.postValue(false)
         }
     }
+
+    fun startPolling() {
+        // Dừng polling hiện tại nếu đang chạy
+        stopPolling()
+
+        // Bắt đầu polling
+        pollingJob = viewModelScope.launch {
+            while (true) {
+                getOrderDetails()
+                delay(5000)
+            }
+        }
+    }
+
+    fun stopPolling() {
+        pollingJob?.cancel()
+        pollingJob = null
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopPolling() // Dừng polling khi ViewModel bị hủy
+    }
+
 }
