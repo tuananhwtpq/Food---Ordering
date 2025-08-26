@@ -5,7 +5,6 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -124,15 +123,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                         binding.loginPassword.setText("") // Tùy chọn: Xóa mật khẩu khi đăng nhập sai
                     }
 
-
                     else -> Unit
                 }
             }
         }
     }
-    private fun isValidEmail(email: String): Boolean {
-        val emailRegex = email.contains("@example.com", ignoreCase = true) || email.contains("@gmail.com", ignoreCase = true)
-        return  emailRegex
 
     }
     override fun initListener() {
