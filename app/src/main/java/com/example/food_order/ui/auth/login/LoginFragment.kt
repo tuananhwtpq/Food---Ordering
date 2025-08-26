@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -128,7 +129,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
             }
         }
     }
-
+    fun isValidEmail(email: String): Boolean {
+        val e = email.contains("@gmail.com",ignoreCase = true) || email.contains("@fpt.edu.vn",ignoreCase = true) ||
+                email.contains("@example.com",ignoreCase = true)
+        return e
     }
     override fun initListener() {
         super.initListener()
