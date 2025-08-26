@@ -30,7 +30,7 @@ class CustomerHomeViewModel(
     private val _uiState = MutableStateFlow(CustomerHomeUiState())
     val uiState: StateFlow<CustomerHomeUiState> = _uiState.asStateFlow()
 
-    private val _restaurantId = MutableStateFlow("a323e1ed-d16d-4506-b1c8-ad4cc31db868")
+    private val _restaurantId = MutableStateFlow("a2baf6f8-33f0-47a5-b2f8-1d5d6817d26c")
     val restaurantId: StateFlow<String> = _restaurantId.asStateFlow()
 
 
