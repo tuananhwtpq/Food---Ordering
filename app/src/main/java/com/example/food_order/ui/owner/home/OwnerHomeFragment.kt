@@ -10,15 +10,19 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.food_order.databinding.FragmentOwnerHomeBinding
 import com.example.food_order.ui.orders.OrdersSharedViewModel
 import com.example.food_order.R
+import com.example.food_order.data.model.owner.RestaurantSelectionBus
 import com.example.food_order.manager.SessionManager
 import com.example.food_order.ui.orders.OrdersSharedVMFactory
 import com.example.food_order.ui.owner.adapter.OwnerOrdersAdapter
 import com.example.food_order.ui.stats.OwnerStatsVMFactory
 import com.example.food_order.ui.stats.OwnerStatsViewModel
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 
 class OwnerHomeFragment : Fragment() {
 
@@ -42,8 +46,7 @@ class OwnerHomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecycler()
-        val resId = SessionManager(requireContext())
-            .fetchSelectedRestaurantId()
+        val resId = SessionManager(requireContext()).fetchSelectedRestaurantId()
         val tvDate = view.findViewById<TextView>(com.example.food_order.R.id.tvDate)
         val tvSumRevenue = view.findViewById<TextView>(com.example.food_order.R.id.tvSumRevenue)
         val tvSumOrders = view.findViewById<TextView>(com.example.food_order.R.id.tvSumOrders)
@@ -60,16 +63,23 @@ class OwnerHomeFragment : Fragment() {
             return
         }
         ordersVM.pending.observe(viewLifecycleOwner) { list ->
-            adapter.submitList(list)   // adapter hiện có đã hỗ trợ submitList
-        }
-        statsVM.refresh()
-        ordersVM.refresh(resId)
-        ordersVM.pending.observe(viewLifecycleOwner) { list ->
+            adapter.submitList(list)
             pendingData.clear()
             pendingData.addAll(list)
             adapter.notifyDataSetChanged()
         }
+
+        statsVM.refresh()
         ordersVM.refresh(resId)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            RestaurantSelectionBus.selectedId
+                .filterNotNull()
+                .collect { newId ->
+                    ordersVM.refresh(newId)
+                    statsVM.refresh()
+                }
+        }
     }
     private fun setupRecycler() {
         adapter = OwnerOrdersAdapter(

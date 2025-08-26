@@ -14,20 +14,26 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.food_order.MainApplication
 import com.example.food_order.R
 import com.example.food_order.base_view.BaseActivity
+import com.example.food_order.data.api.RestaurantApiService
+import com.example.food_order.data.model.owner.RestaurantSelectionBus
 import com.example.food_order.databinding.ActivityMainBinding
+import com.example.food_order.di.RetrofitInstance
 import com.example.food_order.manager.SessionManager
 import com.example.food_order.ui.auth.AuthActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.launch
 
 
 class MainActivity : BaseActivity<ActivityMainBinding>(),
@@ -114,8 +120,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
             }
 
             R.id.nav_settings -> {
-                Toast.makeText(this, "Chức năng này hiện tại đang bị khóa", Toast.LENGTH_SHORT).show()
-            }
+                showRestaurantPickerFromDrawer()            }
 
             R.id.nav_about -> {
                 Toast.makeText(this, "Về chúng tôi", Toast.LENGTH_SHORT).show()
@@ -127,6 +132,49 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
         }
         binding.main.closeDrawer(GravityCompat.START)
         return true
+    }
+    private fun showRestaurantPickerFromDrawer() {
+        val service = RetrofitInstance
+            .createAuthorizedServiceGeneric<RestaurantApiService>(this)
+
+        lifecycleScope.launch {
+            try {
+                val res = service.getMyRestaurants()
+                if (!res.isSuccessful) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Không tải được danh sách nhà hàng (HTTP ${res.code()})",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@launch
+                }
+                val list = res.body()?.data.orEmpty()
+                if (list.isEmpty()) {
+                    Toast.makeText(this@MainActivity, "Tài khoản owner chưa có nhà hàng.", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                val names = list.map { it.name }.toTypedArray()
+                val currentId = sessionManager.fetchSelectedRestaurantId()
+                var idx = list.indexOfFirst { it.id == currentId }.let { if (it >= 0) it else 0 }
+
+                AlertDialog.Builder(this@MainActivity)
+                    .setTitle("Chọn nhà hàng")
+                    .setSingleChoiceItems(names, idx) { _, which -> idx = which }
+                    .setPositiveButton("Chọn") { d, _ ->
+                        val chosen = list[idx]
+                        sessionManager.saveSelectedRestaurantId(chosen.id, chosen.name)
+                        RestaurantSelectionBus.update(chosen.id) // <--- PHÁT SỰ KIỆN
+                        Toast.makeText(this@MainActivity, "Đã chọn: ${chosen.name}", Toast.LENGTH_SHORT).show()
+                        d.dismiss()
+                    }
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show()
+
+            } catch (e: Exception) {
+                Toast.makeText(this@MainActivity, "Lỗi: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onBackPressed() {

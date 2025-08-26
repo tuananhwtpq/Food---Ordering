@@ -1,6 +1,7 @@
 package com.example.food_order.data.api
 
 import com.example.food_order.data.model.common.Restaurant
+import com.example.food_order.data.model.common.RestaurantSummary
 import com.example.food_order.data.model.response.BaseResponse
 import com.example.food_order.data.model.response.OwnerRestaurant
 import com.example.food_order.data.model.response.OwnerRestaurantsResponse
@@ -40,6 +41,11 @@ interface RestaurantApiService {
     suspend fun searchByName(
         @Query("query") query: String
     ): Response<BaseResponse<SearchResult>>
+        // Mục tiêu: trả về list {id, name} là đủ.
+
+    @GET("restaurants/owner/me")
+    suspend fun getOwnerRestaurants(): List<RestaurantSummary>
+
 
 }
 

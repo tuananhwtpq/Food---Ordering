@@ -8,7 +8,9 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.food_order.data.model.owner.RestaurantSelectionBus
 import com.example.food_order.data.repository.OrderListSource
 import com.example.food_order.data.repository.OrderListSource.OrderStatus
 import com.example.food_order.databinding.FragmentDeliveryBinding
@@ -17,6 +19,8 @@ import com.example.food_order.ui.orders.OrdersSharedVMFactory
 import com.example.food_order.ui.orders.OrdersSharedViewModel
 import com.example.food_order.ui.owner.adapter.ListDeliveryAdapter
 import com.example.food_order.utils.extension.showToast
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 
 class DeliveryFragment : Fragment() {
 
@@ -48,6 +52,14 @@ class DeliveryFragment : Fragment() {
             applyFilterAndShow(all)
         }
         ordersVM.refresh(resId)
+        viewLifecycleOwner.lifecycleScope.launch {
+            RestaurantSelectionBus.selectedId
+                .filterNotNull()
+                .collect { newId ->
+                    currentFilter = null // reset filter để tránh “kẹt” trạng thái cũ
+                    ordersVM.refresh(newId)
+                }
+        }
     }
 
     private fun setupRecycler() {

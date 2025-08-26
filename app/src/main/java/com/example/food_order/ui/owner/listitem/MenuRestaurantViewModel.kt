@@ -12,9 +12,12 @@ import com.example.food_order.data.repository.MenuItem
 import com.example.food_order.data.repository.MenuRepository
 import com.example.food_order.di.RetrofitInstance
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.filterNotNull
+
+import com.example.food_order.data.model.owner.RestaurantSelectionBus
 
 class MenuRestaurantViewModel(
-    private val restaurantId: String,
+    private var restaurantId: String,   // để var như bạn đã có
     private val repo: IMenuRepository
 ) : ViewModel() {
 
@@ -26,6 +29,21 @@ class MenuRestaurantViewModel(
 
     private val _items = MutableLiveData<List<MenuItem>>(emptyList())
     val items: LiveData<List<MenuItem>> = _items
+
+    // ==== THÊM KHỐI init NGHE SỰ KIỆN ĐỔI NHÀ HÀNG ====
+    init {
+        viewModelScope.launch {
+            RestaurantSelectionBus.selectedId
+                .filterNotNull()
+                .collect { newId ->
+                    if (newId != restaurantId) {
+                        restaurantId = newId
+                        loadMenu() // nạp lại menu theo nhà hàng mới
+                    }
+                }
+        }
+    }
+    // ===================================================
 
     /** Load toàn bộ menu của nhà hàng */
     fun loadMenu() = viewModelScope.launch {
@@ -58,29 +76,23 @@ class MenuRestaurantViewModel(
         _loading.value = true
         _error.value = null
 
-        // map sang UpdateMenuItemRequest đúng BE
         val updateBody = UpdateMenuItemRequest(
             name = body.name,
             description = body.description,
             price = body.price,
             imageUrl = body.imageUrl,
-            // category, isAvailable nếu bạn có UI cho 2 trường này thì set thêm ở đây
         )
         val patch = body.toPatchMap()
         when (val res = repo.update(itemId, patch)) {
             is AppResult.Success -> {
                 loadMenu()
                 onDone?.invoke()
-                Log.d("MenuPatch", "PATCH body=" + patch)
-
+                Log.d("MenuPatch", "PATCH body=$patch")
             }
             is AppResult.Failure -> _error.value = res.message ?: "Cập nhật món thất bại"
         }
         _loading.value = false
     }
-
-
-
 
     /** Xoá món -> refresh list */
     fun delete(itemId: String, onDone: (() -> Unit)? = null) = viewModelScope.launch {
@@ -88,7 +100,6 @@ class MenuRestaurantViewModel(
         _error.value = null
         when (val res = repo.delete(itemId)) {
             is AppResult.Success -> {
-                // có thể lọc local cho mượt, nhưng để chắc chắn thì reload
                 loadMenu()
                 onDone?.invoke()
             }
@@ -100,19 +111,19 @@ class MenuRestaurantViewModel(
     companion object {
         /** Factory tạo VM với Retrofit service sẵn, tránh đụng RetrofitInstance/Interceptor */
         fun provideFactory(context: Context, restaurantId: String): ViewModelProvider.Factory =
-        object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                require(restaurantId.isNotBlank()) { "restaurantId is blank" }
-                val service: MenuApiService =
-                    RetrofitInstance.createAuthorizedServiceGeneric<MenuApiService>(context.applicationContext)
-                val repo = MenuRepository(service)
-                if (modelClass.isAssignableFrom(MenuRestaurantViewModel::class.java)) {
-                    return MenuRestaurantViewModel(restaurantId, repo) as T
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    require(restaurantId.isNotBlank()) { "restaurantId is blank" }
+                    val service: MenuApiService =
+                        RetrofitInstance.createAuthorizedServiceGeneric<MenuApiService>(context.applicationContext)
+                    val repo = MenuRepository(service)
+                    if (modelClass.isAssignableFrom(MenuRestaurantViewModel::class.java)) {
+                        return MenuRestaurantViewModel(restaurantId, repo) as T
+                    }
+                    throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
                 }
-                throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }
-        }
     }
 }
 

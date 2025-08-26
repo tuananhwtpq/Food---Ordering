@@ -10,10 +10,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.food_order.MainApplication
+
 import com.example.food_order.R
 import com.example.food_order.base_view.BaseFragment
 import com.example.food_order.data.api.OwnerRestaurant
 import com.example.food_order.data.api.RestaurantApiService
+import com.example.food_order.data.model.owner.RestaurantSelectionBus
 import com.example.food_order.data.model.request.LoginRequest
 import com.example.food_order.databinding.FragmentLoginBinding
 import com.example.food_order.di.RetrofitInstance
@@ -206,7 +208,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     list.size == 1 -> {
                         val r = list.first()
                         session.saveSelectedRestaurantId(r.id, r.name)
-                        Log.d("OwnerLogin", "Saved restaurantId=${r.id}")
+                        RestaurantSelectionBus.update(r.id) // <--- thêm dòng này
                         navigateToMain(role)
                     }
                     else -> {
@@ -216,7 +218,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                             .setItems(names) { d, idx ->
                                 val chosen = list[idx]
                                 session.saveSelectedRestaurantId(chosen.id, chosen.name)
-                                Log.d("OwnerLogin", "Picked restaurantId=${chosen.id}")
+                                RestaurantSelectionBus.update(chosen.id) // <--- thêm dòng này
                                 navigateToMain(role)
                                 d.dismiss()
                             }
