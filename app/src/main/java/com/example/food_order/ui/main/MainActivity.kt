@@ -114,7 +114,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
             }
 
             R.id.nav_settings -> {
-                Toast.makeText(this, "Cài đặt", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Chức năng này hiện tại đang bị khóa", Toast.LENGTH_SHORT).show()
             }
 
             R.id.nav_about -> {

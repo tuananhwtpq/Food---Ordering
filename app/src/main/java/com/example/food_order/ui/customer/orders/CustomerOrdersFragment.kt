@@ -90,4 +90,10 @@ class CustomerOrdersFragment : BaseFragment<FragmentCustomerOrdersBinding>() {
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshData()
+    }
+
+
 }
