@@ -36,7 +36,17 @@ interface RestaurantApiService {
         @Path("itemId") menuItemId: String
     ): Response<BaseResponse<MenuItem>>
 
+    @GET("restaurants/search")
+    suspend fun searchByName(
+        @Query("query") query: String
+    ): Response<BaseResponse<SearchResult>>
+
 }
+
+data class SearchResult(
+    val restaurants: List<Restaurant>,
+    val menuItems: List<MenuItem>
+)
 data class OwnerRestaurantsResponse(val data: List<OwnerRestaurant>)
 
 data class OwnerRestaurant(

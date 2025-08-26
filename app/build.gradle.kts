@@ -75,6 +75,8 @@ dependencies {
     // 5. Image Loading (Glide)
     implementation(libs.glide)
 
+    implementation("com.google.android.material:material:1.9.0")
+
 
     // 6. Dependency Injection (Hilt)
     implementation(libs.hilt.android)
