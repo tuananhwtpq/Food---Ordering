@@ -51,13 +51,13 @@
             app:layout_constraintTop_toBottomOf="@id/tvFoodName"
             tools:text="35.000đ" />
 
-        <TextView
+        <ImageView
             android:id="@+id/btnDeleteItem"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:gravity="center_horizontal"
-            android:text="X"
+            android:src="@drawable/x_sign"
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -72,14 +72,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <TextView
+            <ImageView
                 android:id="@+id/btnMinus"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/circle_button"
                 android:gravity="center_horizontal"
-                android:text="-"
+                android:src="@drawable/ic_sharp_minus"
                 android:textSize="30sp" />
 
             <TextView
@@ -93,14 +93,14 @@
                 android:textStyle="bold"
                 tools:text="02" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/btnPlus"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/circle_button"
                 android:gravity="center_horizontal"
-                android:text="+"
+                android:src="@drawable/ic_round_plus"
                 android:textSize="30sp" />
 
         </LinearLayout>
