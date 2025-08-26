@@ -3,6 +3,7 @@ package com.example.food_order.ui.auth.login
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.example.food_order.MainApplication
@@ -76,6 +77,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
         binding.loginButton.setOnClickListener {
             handleLoginClicked()
+        }
+
+        binding.forgetPasswordTxt.setOnClickListener {
+            Toast.makeText(
+                this.context,
+                "Chức năng này tạm thời chưa được phát triển!",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

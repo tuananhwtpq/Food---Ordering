@@ -65,6 +65,17 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>() {
                     else -> Unit
                 }
             }
+
+        }
+
+        launchOnStarted {
+            viewModel.error.collect { errorMessage ->
+                errorMessage?.let {
+                    showToast("Lỗi: $it")
+                    Log.d("Lỗi", it)
+                    viewModel.clearError()
+                }
+            }
         }
 
     }
@@ -91,6 +102,12 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>() {
         val email = binding.edEnterEmail.text.toString().trim()
         val password = binding.edPassword.text.toString().trim()
         val rePassword = binding.edReEnterpw.text.toString().trim()
+        val checkbox = binding.checkboxSignUp.isChecked
+
+        if (!viewModel.validateLoginInput(name, email, password, rePassword, checkbox)) {
+            return
+        }
+
 
         if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
             showToast("Vui lòng điền đầy đủ thông tin")
