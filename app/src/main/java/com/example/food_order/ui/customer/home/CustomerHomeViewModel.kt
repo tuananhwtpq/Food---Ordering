@@ -30,6 +30,10 @@ class CustomerHomeViewModel(
     private val _uiState = MutableStateFlow(CustomerHomeUiState())
     val uiState: StateFlow<CustomerHomeUiState> = _uiState.asStateFlow()
 
+    private val _restaurantId = MutableStateFlow("a323e1ed-d16d-4506-b1c8-ad4cc31db868")
+    val restaurantId: StateFlow<String> = _restaurantId.asStateFlow()
+
+
     init {
         fetchAllData()
     }
@@ -41,6 +45,7 @@ class CustomerHomeViewModel(
             val lat = sessionManager.fetchLatitude() ?: 21.053731
             val lon = sessionManager.fetchLongitude() ?: 105.7351068
             val restaurantId = "7b8d53be-f03d-4742-a9c2-15ba95aa35a3"
+            val restaurantId = _restaurantId.value
 
             var categoryList: List<Category> = emptyList()
             var restaurantList: List<Restaurant> = emptyList()
@@ -97,4 +102,43 @@ class CustomerHomeViewModel(
             }
         }
     }
+
+//    fun searchByName(query: String) {
+//        viewModelScope.launch {
+//            _uiState.update { it.copy(isLoading = true, error = null) }
+//
+//            try {
+//                val response = restaurantRepository.searchByName(query)
+//                if (response.isSuccess) {
+//                    val searchResult = response.getOrThrow()
+//                    _uiState.update { currentState ->
+//                        currentState.copy(
+//                            isLoading = false,
+//                            searchResults = CustomerHomeUiState.SearchResult(
+//                                restaurants = searchResult.restaurants,
+//                                menuItems = searchResult.menuItems
+//                            ),
+//                            error = null
+//                        )
+//                    }
+//                } else {
+//                    _uiState.update { currentState ->
+//                        currentState.copy(
+//                            isLoading = false,
+//                            error = response.exceptionOrNull()?.message ?: "Search failed"
+//                        )
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                _uiState.update { currentState ->
+//                    currentState.copy(
+//                        isLoading = false,
+//                        error = "Search failed: ${e.message}"
+//                    )
+//                }
+//                Log.e("CustomerHomeViewModel", "Search failed: ${e.message}", e)
+//            }
+//        }
+//    }
+
 }

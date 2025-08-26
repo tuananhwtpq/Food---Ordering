@@ -116,6 +116,10 @@
             android:name="foodItemId"
             app:argType="string" />
 
+        <argument
+            android:name="restaurantId"
+            app:argType="string" />
+
 
     </fragment>
     <fragment

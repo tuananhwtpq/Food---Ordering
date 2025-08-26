@@ -59,7 +59,10 @@ class CustomerHomeFragment : BaseFragment<FragmentCustomerHomeBinding>() {
         Log.d(TAG, "Restaurant ID: ${restaurant.id}")
     }
     private val popularFoodAdapter = PopularFoodAdapter { menuItem ->
-        navigateToFoodItemDetail(menuItem.id.toString())
+        // Lấy restaurantId từ ViewModel
+        viewModel.restaurantId.value.let { restaurantId ->
+            navigateToFoodItemDetail(menuItem.id.toString(), restaurantId)
+        }
     }
 
     override fun getViewBinding(
@@ -126,12 +129,12 @@ class CustomerHomeFragment : BaseFragment<FragmentCustomerHomeBinding>() {
         safeNavigate(R.id.action_customerHomeFragment_to_restaurantDetailFragment, bundle)
     }
 
-    private fun navigateToFoodItemDetail(foodItemId: String) {
+    private fun navigateToFoodItemDetail(foodItemId: String, restaurantId: String) {
         val bundle = bundleOf(
-            "foodItemId" to foodItemId
+            "foodItemId" to foodItemId,
+            "restaurantId" to restaurantId
         )
         safeNavigate(R.id.action_customerHomeFragment_to_popularItemDetailFragment, bundle)
-
     }
 
 

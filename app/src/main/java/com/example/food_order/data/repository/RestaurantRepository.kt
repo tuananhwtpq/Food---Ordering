@@ -1,6 +1,7 @@
 package com.example.food_order.data.repository
 
 import com.example.food_order.data.api.RestaurantApiService
+import com.example.food_order.data.api.SearchResult
 import com.example.food_order.data.model.common.Restaurant
 import com.example.food_order.utils.extension.parseError
 
@@ -86,6 +87,27 @@ class RestaurantRepository(
                 val errorMessage = response.errorBody()?.parseError()
                 Result.failure(
                     Exception(errorMessage ?: "API call failed with code: ${response.code()}")
+                )
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun searchByName(query: String): Result<SearchResult> {
+        return try {
+            val response = apiService.searchByName(query)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body?.data != null) {
+                    Result.success(body.data)
+                } else {
+                    Result.failure(Exception("Response body or data is null for search"))
+                }
+            } else {
+                val errorMessage = response.errorBody()?.parseError()
+                Result.failure(
+                    Exception(errorMessage ?: "Search failed with code: ${response.code()}")
                 )
             }
         } catch (e: Exception) {
