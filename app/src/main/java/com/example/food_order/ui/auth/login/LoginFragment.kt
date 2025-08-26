@@ -79,17 +79,61 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     }
 
                     is LoginUiState.Error -> {
-                        //binding.passwordLayout.error = state.message
-                        binding.errorTxt.isVisible = true
-                        binding.errorTxt.text = state.message
+                        binding.loadingView.isVisible = false
+                        // binding.errorTxt.isVisible = false // Bạn có thể muốn hiển thị errorTxt với msg
+                        val emailInput = binding.loginEmail.text.toString().trim() // Lấy text từ EditText và trim()
+                        val rawErrorMessage = state.message?.trim().orEmpty()
+
+                        val specificErrorMessage = when {
+                            rawErrorMessage.contains("401", ignoreCase = true) || rawErrorMessage.contains("unauthorized", ignoreCase = true) ->
+                                "Email hoặc mật khẩu không đúng."
+                            rawErrorMessage.contains("timeout", ignoreCase = true) ||
+                                    rawErrorMessage.contains("failed to connect", ignoreCase = true) ||
+                                    rawErrorMessage.contains("unable to resolve host", ignoreCase = true) ->
+                                "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại kết nối mạng."
+                            rawErrorMessage.contains("404", ignoreCase = true) -> // Lỗi 404 Not Found
+                                "Tài khoản không tồn tại."
+                            rawErrorMessage.contains("400", ignoreCase = true) -> // Lỗi 400 Bad Request (có thể do nhiều nguyên nhân)
+                                "Yêu cầu không hợp lệ. Vui lòng thử lại." // Hoặc "Sai tài khoản hoặc mật khẩu" nếu API của bạn trả về 400 cho trường hợp đó
+                            rawErrorMessage.isBlank() -> // Nếu không có thông điệp lỗi cụ thể từ server
+                                "Đăng nhập thất bại. Vui lòng thử lại."
+                            // Có thể thêm các trường hợp lỗi cụ thể khác từ API của bạn ở đây
+                            else -> rawErrorMessage // Nếu không khớp với các trường hợp trên, hiển thị thông báo gốc từ server
+                        }
+
+                        // Kiểm tra định dạng email riêng biệt sau khi xử lý các lỗi server
+                        // Điều này hợp lý hơn là trộn lẫn với các mã lỗi HTTP
+                        var finalMessage = specificErrorMessage
+                        if (!isValidEmail(emailInput)) { // Sử dụng một hàm riêng để kiểm tra email
+                            finalMessage = "Địa chỉ email không hợp lệ. Vui lòng kiểm tra lại."
+                            binding.errorTxt.text = finalMessage // Hiển thị lỗi cụ thể cho email nếu có errorTxt
+                            binding.errorTxt.isVisible = true
+                        } else if (specificErrorMessage == rawErrorMessage && rawErrorMessage.isNotBlank()) {
+                            // Nếu không có lỗi server cụ thể được ánh xạ và có thông báo gốc
+                            binding.errorTxt.text = finalMessage
+                            binding.errorTxt.isVisible = true
+                        } else if (specificErrorMessage != rawErrorMessage) { // Nếu có lỗi server cụ thể được ánh xạ
+                            binding.errorTxt.text = finalMessage
+                            binding.errorTxt.isVisible = true
+                        }
+
+
+                        showToast(finalMessage)
+                        binding.loginEmail.setText("")
+                        binding.loginPassword.setText("") // Tùy chọn: Xóa mật khẩu khi đăng nhập sai
                     }
+
 
                     else -> Unit
                 }
             }
         }
     }
+    private fun isValidEmail(email: String): Boolean {
+        val emailRegex = email.contains("@example.com", ignoreCase = true) || email.contains("@gmail.com", ignoreCase = true)
+        return  emailRegex
 
+    }
     override fun initListener() {
         super.initListener()
 

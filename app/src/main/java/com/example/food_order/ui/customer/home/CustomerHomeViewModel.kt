@@ -40,7 +40,7 @@ class CustomerHomeViewModel(
 
             val lat = sessionManager.fetchLatitude() ?: 21.053731
             val lon = sessionManager.fetchLongitude() ?: 105.7351068
-            val restaurantId = "a323e1ed-d16d-4506-b1c8-ad4cc31db868"
+            val restaurantId = "7b8d53be-f03d-4742-a9c2-15ba95aa35a3"
 
             var categoryList: List<Category> = emptyList()
             var restaurantList: List<Restaurant> = emptyList()
