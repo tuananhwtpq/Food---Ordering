@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -144,6 +145,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         binding.loginButton.setOnClickListener {
             handleLoginClicked()
         }
+        binding.forgetPasswordTxt.setOnClickListener{
+            Toast.makeText(this.context,"Chức năng này tạm thời đang bị khóa!",Toast.LENGTH_SHORT).show()
+        }
+
+
     }
 
     override fun onBack() {
