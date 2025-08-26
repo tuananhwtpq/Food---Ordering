@@ -101,4 +101,14 @@ class OrderDetailFragment : BaseFragment<FragmentOrderDetailBinding>() {
     override fun onBack() {
         findNavController().navigateUp()
     }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.startPolling()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.startPolling()
+    }
 }

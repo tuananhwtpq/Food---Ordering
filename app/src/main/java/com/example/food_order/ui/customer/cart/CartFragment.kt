@@ -96,13 +96,16 @@ class CartFragment : BaseFragment<FragmentCartBinding>() {
                         "Đặt hàng thành công! Mã đơn hàng của bạn là #${response.id.take(8)}",
                         Toast.LENGTH_LONG
                     ).show()
-                    //findNavController().previousBackStackEntry?.savedStateHandle?.set("refreshOrders", true)
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        Log.d("CartFragment", "Waiting for 1.5s before navigating")
-                        delay(1500)
-                        safeNavigate(R.id.action_cartFragment_to_customerOrdersFragment)
-                        Log.d("CartFragment", "Navigated to CustomerOrdersFragment")
-                    }
+                    findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                        "refreshOrders",
+                        true
+                    )
+//                    viewLifecycleOwner.lifecycleScope.launch {
+//                        Log.d("CartFragment", "Waiting for 1.5s before navigating")
+//                        delay(1500)
+//                        safeNavigate(R.id.action_cartFragment_to_customerOrdersFragment)
+//                        Log.d("CartFragment", "Navigated to CustomerOrdersFragment")
+//                    }
                     viewModel.onPlaceOrderShown()
                 }.onFailure {
                     Toast.makeText(context, "Lỗi đặt hàng: ${it.message}", Toast.LENGTH_LONG).show()
