@@ -60,6 +60,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     is LoginUiState.Error -> {
                         binding.errorTxt.isVisible = true
                         binding.errorTxt.text = state.message
+                        //Toast.makeText(this.context, state.message, Toa)
                     }
 
                     else -> Unit

@@ -43,4 +43,8 @@ class OrderHistoryViewModel(
             _isLoading.postValue(false)
         }
     }
+
+    fun refreshData() {
+        getOrderHistory()
+    }
 }
