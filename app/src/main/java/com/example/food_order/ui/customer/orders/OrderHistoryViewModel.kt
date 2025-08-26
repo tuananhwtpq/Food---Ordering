@@ -44,7 +44,7 @@ class OrderHistoryViewModel(
         }
     }
 
-    fun refreshData(){
+    fun refreshData() {
         getOrderHistory()
     }
 }

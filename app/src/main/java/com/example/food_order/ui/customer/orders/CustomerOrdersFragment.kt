@@ -89,6 +89,11 @@ class CustomerOrdersFragment : BaseFragment<FragmentCustomerOrdersBinding>() {
         binding.rvOrders.adapter = orderAdapter
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshOrderHistory()
+    }
+
 
     override fun onResume() {
         super.onResume()
