@@ -99,6 +99,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                             rawErrorMessage.isBlank() -> // Nếu không có thông điệp lỗi cụ thể từ server
                                 "Đăng nhập thất bại. Vui lòng thử lại."
                             // Có thể thêm các trường hợp lỗi cụ thể khác từ API của bạn ở đây
+                            rawErrorMessage.contains("BEGIN_OBJECT but was", ignoreCase = true) -> "Sai role!"
                             else -> rawErrorMessage // Nếu không khớp với các trường hợp trên, hiển thị thông báo gốc từ server
                         }
 
@@ -156,7 +157,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
     }
 
     private fun handleLoginClicked() {
-        binding.errorTxt.isVisible = false
+        //binding.errorTxt.isVisible = false
         val email = binding.loginEmail.text.toString().trim()
         val password = binding.loginPassword.text.toString().trim()
 
