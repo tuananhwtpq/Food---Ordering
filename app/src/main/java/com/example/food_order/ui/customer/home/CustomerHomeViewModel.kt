@@ -30,7 +30,7 @@ class CustomerHomeViewModel(
     private val _uiState = MutableStateFlow(CustomerHomeUiState())
     val uiState: StateFlow<CustomerHomeUiState> = _uiState.asStateFlow()
 
-    private val _restaurantId = MutableStateFlow("a2baf6f8-33f0-47a5-b2f8-1d5d6817d26c")
+    private val _restaurantId = MutableStateFlow("7b8d53be-f03d-4742-a9c2-15ba95aa35a3")
     val restaurantId: StateFlow<String> = _restaurantId.asStateFlow()
 
 
@@ -44,7 +44,6 @@ class CustomerHomeViewModel(
 
             val lat = sessionManager.fetchLatitude() ?: 21.053731
             val lon = sessionManager.fetchLongitude() ?: 105.7351068
-            val restaurantId = "7b8d53be-f03d-4742-a9c2-15ba95aa35a3"
             val restaurantId = _restaurantId.value
 
             var categoryList: List<Category> = emptyList()
