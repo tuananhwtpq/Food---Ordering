@@ -1,24 +1,32 @@
 package com.example.food_order.ui.auth.login
 
 import android.content.Intent
-import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
+import com.example.food_order.MainApplication
 import com.example.food_order.R
 import com.example.food_order.base_view.BaseFragment
+import com.example.food_order.data.model.request.LoginRequest
 import com.example.food_order.databinding.FragmentLoginBinding
 import com.example.food_order.ui.main.MainActivity
+import com.example.food_order.utils.extension.launchOnStarted
 import com.example.food_order.utils.extension.safeNavigate
 import com.example.food_order.utils.extension.showToast
+import com.example.food_order.utils.state.LoginUiState
 import kotlin.toString
 
 
 class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
-    private var userRole: String? = null
+    private val viewModel: LoginViewModel by viewModels {
+        val application = requireActivity().application as MainApplication
+        LoginViewModelFactory(
+            application.authRepository,
+        )
+    }
 
     override fun getViewBinding(
         inflater: LayoutInflater,
@@ -30,32 +38,54 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
     override fun setupView() {
         super.setupView()
 
-        arguments?.let {
-            userRole = it.getString("userRole")
-        }
-
-        showToast("userRole: $userRole")
-
     }
 
     override fun observeData() {
         super.observeData()
+        launchOnStarted {
+            viewModel.loginUiState.collect { state ->
+                binding.loadingView.isVisible = state is LoginUiState.Loading
+
+                when (state) {
+                    is LoginUiState.Success -> {
+                        val isProfileComplete = state.authResponse.isProfileComplete
+
+                        if (isProfileComplete) {
+                            navigateToMain(state.authResponse.role)
+                        } else {
+                            navigateToProfileSetup()
+                        }
+                    }
+
+                    is LoginUiState.Error -> {
+                        binding.errorTxt.isVisible = true
+                        binding.errorTxt.text = state.message
+                        //Toast.makeText(this.context, state.message, Toa)
+                    }
+
+                    else -> Unit
+                }
+            }
+        }
     }
 
     override fun initListener() {
         super.initListener()
 
         binding.signupText.setOnClickListener {
-
-            val bundle = Bundle().apply {
-                putString("userRole", userRole)
-            }
-
-            safeNavigate(R.id.action_loginFragment_to_signupFragment, bundle)
+            safeNavigate(R.id.action_loginFragment2_to_signupFragment2)
         }
 
         binding.loginButton.setOnClickListener {
             handleLoginClicked()
+        }
+
+        binding.forgetPasswordTxt.setOnClickListener {
+            Toast.makeText(
+                this.context,
+                "Chức năng này tạm thời chưa được phát triển!",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -69,18 +99,30 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         val password = binding.loginPassword.text.toString().trim()
 
         if (email.isEmpty() || password.isEmpty()) {
-            showToast("Vui lòng nhập đầy đủ thông tin")
             return
         }
 
-        showToast("Đăng nhập thành công!")
+        val selectedRole = when (binding.radioGroupRole.checkedRadioButtonId) {
+            R.id.radioButtonOwner -> "owner"
+            else -> "customer"
+        }
 
+        val request = LoginRequest(email, password, selectedRole)
+        viewModel.loginUser(request)
+    }
+
+    private fun navigateToMain(userRole: String) {
+        showToast("Đăng nhập thành công với vai trò: $userRole")
         val intent = Intent(requireActivity(), MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra("USER_ROLE", userRole)
         }
         startActivity(intent)
+        requireActivity().finish()
+    }
 
+    private fun navigateToProfileSetup() {
+        showToast("Vui lòng hoàn tất hồ sơ của bạn")
+        safeNavigate(R.id.action_loginFragment2_to_profileSetupFragment)
     }
 
 

@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item
+        android:id="@+id/ownerHomeFragment"
+        android:icon="@drawable/home_fh"
+        android:title="Trang chủ" />
+    <item
+        android:id="@+id/deliveryFragment"
+        android:icon="@drawable/shopping_cart"
+        android:title="Đơn hàng" />
+    <item
+        android:id="@+id/menuRestaurantFragment"
+        android:icon="@drawable/list"
+        android:title="Thực đơn" />
 </menu>

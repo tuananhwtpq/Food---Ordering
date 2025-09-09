@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt) // Thêm plugin kapt
     alias(libs.plugins.hilt.android)  // Thêm plugin Hilt
+    id("androidx.navigation.safeargs.kotlin")
+
 }
 
 android {
@@ -65,12 +67,26 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     // 5. Image Loading (Glide)
     implementation(libs.glide)
 
+    implementation("com.google.android.material:material:1.9.0")
+
+
     // 6. Dependency Injection (Hilt)
     implementation(libs.hilt.android)
-    //implementation(libs.activity)
+//    implementation("androidx.compose.ui:ui-graphics-android:1.6.7")
+//    //implementation(libs.activity)
+//    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+//    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+//    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     kapt(libs.hilt.compiler)
 
     // Test

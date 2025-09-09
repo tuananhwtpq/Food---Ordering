@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/ownerHomeFragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.food_order.ui.owner.home.OwnerHomeFragment"
+    tools:layout="@layout/fragment_owner_home">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewOrderClassification"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_margin="12dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cslOrderClassification"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            >
+
+            <TextView
+                android:id="@+id/tvAccepted"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:layout_margin="12dp"
+                android:background="@drawable/btn_classification"
+                android:text="Đã nhận"
+                android:textAlignment="center"
+                android:textSize="22dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/tvRejected"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvRejected"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:layout_margin="12dp"
+                android:background="@drawable/btn_classification"
+                android:text="Đã từ chối"
+                android:textAlignment="center"
+                android:textSize="22dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tvAccepted"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvDelived"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_classification"
+                android:layout_marginEnd="2dp"
+                android:text="Đã giao"
+                android:textAlignment="center"
+                android:textSize="22dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/tvDelivery_Failed"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvAccepted" />
+
+            <TextView
+                android:id="@+id/tvDelivery_Failed"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_classification"
+                android:text="Giao thất bại"
+                android:textAlignment="center"
+                android:textSize="22dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tvDelived"
+                app:layout_constraintTop_toBottomOf="@id/tvRejected" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/emptyView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Chưa có đơn hàng"
+        android:gravity="center"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tvDelivery"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <TextView
+        android:id="@+id/tvDelivery"
+        android:layout_marginStart="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textAlignment="textStart"
+        android:text="Đơn hàng:"
+        android:textSize="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardViewOrderClassification"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewDelirey"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/tvDelivery"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginVertical="16dp"
+        tools:listitem="@layout/list_item_delivery">
+
+    </androidx.recyclerview.widget.RecyclerView>
+</androidx.constraintlayout.widget.ConstraintLayout>

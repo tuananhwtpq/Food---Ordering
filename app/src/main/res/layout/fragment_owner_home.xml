@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/ownerHomeFragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.owner.home.OwnerHomeFragment">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewStats"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="12dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cslStats"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            >
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="80dp"
+                android:layout_height="20dp"
+                android:layout_margin="12dp"
+                android:text="18/08/2025"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+            <TextView
+                android:id="@+id/tvRevenueToday"
+                android:layout_width="80dp"
+                android:layout_height="25dp"
+                android:text="Doanh thu:"
+                android:layout_marginStart="12dp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDate"
+                />
+            <TextView
+                android:id="@+id/tvSumRevenue"
+                android:layout_width="80dp"
+                android:layout_height="25dp"
+                android:text="3200000"
+                android:textAlignment="center"
+                app:layout_constraintTop_toBottomOf="@id/tvRevenueToday"
+                app:layout_constraintStart_toStartOf="@id/tvRevenueToday"
+                app:layout_constraintEnd_toEndOf="@id/tvRevenueToday"/>
+            <TextView
+                android:id="@+id/tvOrdersToday"
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:text="Đơn hàng:"
+                android:layout_marginStart="22dp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                app:layout_constraintTop_toTopOf="@id/tvRevenueToday"
+                app:layout_constraintStart_toEndOf="@id/tvRevenueToday"
+                />
+            <TextView
+                android:id="@+id/tvSumOrders"
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:text="12"
+                android:textSize="17dp"
+                android:textAlignment="center"
+                app:layout_constraintTop_toBottomOf="@id/tvOrdersToday"
+                app:layout_constraintStart_toStartOf="@id/tvOrdersToday"
+                app:layout_constraintEnd_toEndOf="@id/tvOrdersToday"/>
+            <TextView
+                android:id="@+id/tvOrdersPending"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:text="Đơn hàng chờ:"
+                android:layout_marginStart="22dp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                app:layout_constraintTop_toTopOf="@id/tvOrdersToday"
+                app:layout_constraintStart_toEndOf="@+id/tvOrdersToday"
+                app:layout_constraintBottom_toBottomOf="@id/tvOrdersToday"
+                />
+            <TextView
+                android:id="@+id/tvSumOrdersPending"
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:textAlignment="center"
+                android:textSize="17dp"
+                android:text="5"
+                app:layout_constraintTop_toBottomOf="@id/tvOrdersPending"
+                app:layout_constraintStart_toStartOf="@id/tvOrdersPending"
+                app:layout_constraintEnd_toEndOf="@id/tvOrdersPending"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tvListOrderPending"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="10dp"
+        android:text="Danh sách đơn hàng chờ:"
+        android:textSize="17dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardViewStats" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvListOrderPending"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginVertical="16dp"
+        android:layout_marginBottom="30dp"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvListOrderPending"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="12dp"
+        tools:listitem="@layout/item_order">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,3 +1,18 @@
 package com.example.food_order.data.model.common
 
-data class Category(val id: Int, val name: String, val iconUrl: String)
+import com.google.gson.annotations.SerializedName
+
+data class Category(
+    @SerializedName("id")
+    val id: String,
+
+    @SerializedName("name")
+    val name: String,
+
+    @SerializedName("imageUrl")
+    val imageUrl: String?,
+
+    @SerializedName("createdAt")
+    val createdAt: String,
+
+    )

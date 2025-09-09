@@ -12,6 +12,15 @@
         <action
             android:id="@+id/action_customerHomeFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_customerHomeFragment_to_categoryDetailFragment"
+            app:destination="@id/categoryDetailFragment" />
+        <action
+            android:id="@+id/action_customerHomeFragment_to_popularItemDetailFragment"
+            app:destination="@id/popularItemDetailFragment" />
+        <action
+            android:id="@+id/action_customerHomeFragment_to_restaurantDetailFragment"
+            app:destination="@id/restaurantDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/cartFragment"
@@ -27,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/customerOrdersFragment"
-        android:name="com.example.food_order.ui.owner.CustomerOrdersFragment"
+        android:name="com.example.food_order.ui.customer.orders.CustomerOrdersFragment"
         android:label="fragment_customer_orders"
         tools:layout="@layout/fragment_customer_orders">
         <action
@@ -36,5 +45,119 @@
         <action
             android:id="@+id/action_customerOrdersFragment_to_customerHomeFragment"
             app:destination="@id/customerHomeFragment" />
+        <action
+            android:id="@+id/action_customerOrdersFragment_to_orderDetailFragment"
+            app:destination="@id/orderDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ownerHomeFragment"
+        android:name="com.example.food_order.ui.owner.home.OwnerHomeFragment"
+        android:label="fragment_owner_home"
+        tools:layout="@layout/fragment_owner_home" >
+        <action
+            android:id="@+id/action_ownerHomeFragment_to_deliveryFragment"
+            app:destination="@id/deliveryFragment" />
+        <action
+            android:id="@+id/action_ownerHomeFragment_to_menuRestaurantFragment"
+            app:destination="@id/menuRestaurantFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/deliveryFragment"
+        android:name="com.example.food_order.ui.owner.delivery.DeliveryFragment"
+        android:label="fragment_delivery"
+        tools:layout="@layout/fragment_delivery" >
+        <action
+            android:id="@+id/action_deliveryFragment_to_ownerHomeFragment"
+            app:destination="@id/ownerHomeFragment" />
+        <action
+            android:id="@+id/action_deliveryFragment_to_menuRestaurantFragment"
+            app:destination="@id/menuRestaurantFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/menuRestaurantFragment"
+        android:name="com.example.food_order.ui.owner.listitem.MenuRestaurantFragment"
+        android:label="fragment_menu_restaurant"
+        tools:layout="@layout/fragment_menu_restaurant" >
+        <action
+            android:id="@+id/action_menuRestaurantFragment_to_ownerHomeFragment"
+            app:destination="@id/ownerHomeFragment" />
+        <action
+            android:id="@+id/action_menuRestaurantFragment_to_deliveryFragment"
+            app:destination="@id/deliveryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/categoryDetailFragment"
+        android:name="com.example.food_order.ui.customer.home.detail.categoryDetail.CategoryDetailFragment"
+        android:label="fragment_category_detail"
+        tools:layout="@layout/fragment_category_detail">
+
+        <argument
+            android:name="categoryId"
+            app:argType="string" />
+
+        <argument
+            android:name="categoryName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_categoryDetailFragment_to_restaurantDetailFragment"
+            app:destination="@id/restaurantDetailFragment" />
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/popularItemDetailFragment"
+        android:name="com.example.food_order.ui.customer.home.detail.popularItemDetail.PopularItemDetailFragment"
+        android:label="fragment_popular_item_detail"
+        tools:layout="@layout/fragment_popular_item_detail">
+
+        <argument
+            android:name="foodItemId"
+            app:argType="string" />
+
+        <argument
+            android:name="restaurantId"
+            app:argType="string" />
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/restaurantDetailFragment"
+        android:name="com.example.food_order.ui.customer.home.detail.restaurantDetail.RestaurantDetailFragment"
+        android:label="fragment_restaurant_detail"
+        tools:layout="@layout/fragment_restaurant_detail">
+
+        <argument
+            android:name="restaurantId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_restaurantDetailFragment_to_restaurantMenuItemFragment"
+            app:destination="@id/restaurantMenuItemFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/restaurantMenuItemFragment"
+        android:name="com.example.food_order.ui.customer.home.detail.restaurantDetail.restaurant_menu_item.RestaurantMenuItemFragment"
+        android:label="fragment_restaurant_menu_item"
+        tools:layout="@layout/fragment_restaurant_menu_item">
+
+        <argument
+            android:name="foodItemId"
+            app:argType="string" />
+
+        <argument
+            android:name="restaurantId"
+            app:argType="string" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/orderDetailFragment"
+        android:name="com.example.food_order.ui.customer.orders.details.OrderDetailFragment"
+        android:label="fragment_order_detail"
+        tools:layout="@layout/fragment_order_detail">
+
+        <argument
+            android:name="orderId"
+            app:argType="string" />
+
     </fragment>
 </navigation>

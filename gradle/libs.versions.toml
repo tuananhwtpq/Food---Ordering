@@ -9,6 +9,7 @@ material = "1.11.0"
 activity = "1.8.2"
 constraintlayout = "2.1.4"
 
+
 lifecycle = "2.7.0"
 navigation = "2.7.7"
 retrofit = "2.9.0"
@@ -19,6 +20,7 @@ hilt = "2.48"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
+uiTestJvmstubs = "1.6.7"
 # Xóa dòng activityVersion thừa
 
 [libraries]
@@ -53,7 +55,10 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-ui-test-jvmstubs = { group = "androidx.compose.ui", name = "ui-test-jvmstubs", version.ref = "uiTestJvmstubs" }
 # Xóa dòng activity thừa
+
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
