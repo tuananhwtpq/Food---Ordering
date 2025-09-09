@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_light_purple"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.customer.home.CustomerHomeFragment">
 
@@ -12,7 +13,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Bạn có thể thêm các view khác như thanh tìm kiếm ở đây sau -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,13 +21,27 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <!-- Danh mục -->
+        <EditText
+            android:id="@+id/ed_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_search_box"
+            android:drawableStart="@drawable/search_icon"
+            android:drawablePadding="12dp"
+            android:hint="Search"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:padding="12dp"
+            android:textColorHint="?android:attr/textColorSecondary" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Danh mục"
             android:textSize="18sp"
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -40,12 +54,12 @@
             tools:itemCount="5"
             tools:listitem="@layout/item_category" />
 
-        <!-- Nhà hàng nổi bật -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Nhà hàng nổi bật"
+            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -59,13 +73,13 @@
             tools:itemCount="3"
             tools:listitem="@layout/item_restaurant" />
 
-        <!-- Món ăn phổ biến -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Món ăn phổ biến"
             android:textSize="18sp"
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView

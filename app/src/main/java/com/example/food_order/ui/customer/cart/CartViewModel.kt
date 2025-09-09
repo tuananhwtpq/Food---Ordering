@@ -1,0 +1,107 @@
+package com.example.food_order.ui.customer.cart
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.food_order.data.model.common.CartResponse
+import com.example.food_order.data.model.common.PlaceOrderRequest
+import com.example.food_order.data.model.common.PlaceOrderResponse
+import com.example.food_order.data.model.common.UpdateCartItemRequest
+import com.example.food_order.data.repository.AddressRepository
+import com.example.food_order.data.repository.CartRepository
+import com.example.food_order.data.repository.OrderRepository
+import kotlinx.coroutines.launch
+
+class CartViewModel(
+    private val cartRepository: CartRepository,
+    private val addressRepository: AddressRepository,
+    private val orderRepository: OrderRepository
+) : ViewModel() {
+
+    private val _cartResponse = MutableLiveData<Result<CartResponse>>()
+    val cartResponse: LiveData<Result<CartResponse>> = _cartResponse
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+
+    private val _itemUpdateStatus = MutableLiveData<Result<Unit>>()
+    val itemUpdateStatus: LiveData<Result<Unit>> = _itemUpdateStatus
+
+    private val _placeOrderStatus = MutableLiveData<Result<PlaceOrderResponse>?>()
+    val placeOrderStatus: LiveData<Result<PlaceOrderResponse>?> = _placeOrderStatus
+
+//    init {
+//        getCartDetails()
+//    }
+
+    fun getCartDetails() {
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            val result = cartRepository.getCart()
+            _cartResponse.postValue(result)
+            _isLoading.postValue(false)
+        }
+    }
+
+    fun updateCartItemQuantity(cartItemId: String, newQuantity: Int) {
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            val request = UpdateCartItemRequest(cartItemId, newQuantity)
+            val result = cartRepository.updateCartItem(request)
+            _itemUpdateStatus.postValue(result)
+            if (result.isSuccess) {
+                getCartDetails()
+            } else {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun removeCartItem(cartItemId: String) {
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            val result = cartRepository.removeCartItem(cartItemId)
+            _itemUpdateStatus.postValue(result)
+            if (result.isSuccess) {
+                getCartDetails()
+            } else {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun placeOrder() {
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            val addressResult = addressRepository.getAddresses()
+
+            addressResult.onSuccess { addresses ->
+                if (addresses.isEmpty()) {
+                    _placeOrderStatus.postValue(Result.failure(Exception("Vui lòng thêm địa chỉ giao hàng trước")))
+                    _isLoading.postValue(false)
+                    return@onSuccess
+                }
+
+                val defaultAddress = addresses.first()
+                val request = PlaceOrderRequest(addressId = defaultAddress.id!!)
+                val orderResult = orderRepository.placeOrder(request)
+
+                if (orderResult.isSuccess) {
+                    getCartDetails()
+                }
+
+                _placeOrderStatus.postValue(orderResult)
+
+            }.onFailure {
+                _placeOrderStatus.postValue(Result.failure(it))
+            }
+            _isLoading.postValue(false)
+        }
+    }
+
+    fun onPlaceOrderShown() {
+        _placeOrderStatus.value = null
+    }
+}

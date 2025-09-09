@@ -1,3 +1,34 @@
 package com.example.food_order.data.model.common
 
-data class Restaurant(val id: Int, val name: String, val imageUrl: String, val rating: Double)
+import com.google.gson.annotations.SerializedName
+
+data class Restaurant(
+    @SerializedName("id")
+    val id: String,
+
+    @SerializedName("ownerId")
+    val ownerId: String,
+
+    @SerializedName("name")
+    val name: String,
+
+    @SerializedName("address")
+    val address: String?,
+
+    @SerializedName("categoryId")
+    val categoryId: String,
+
+    @SerializedName("latitude")
+    val latitude: Double?,
+
+    @SerializedName("longitude")
+    val longitude: Double?,
+
+    @SerializedName("createdAt")
+    val createdAt: String,
+
+    @SerializedName("distance")
+    val distance: Double?,
+    @SerializedName("imageUrl")
+    val imageUrl: String?
+)

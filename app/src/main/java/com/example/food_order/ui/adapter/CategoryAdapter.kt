@@ -7,16 +7,25 @@ import com.bumptech.glide.Glide
 import com.example.food_order.data.model.common.Category
 import com.example.food_order.databinding.ItemCategoryBinding
 
-class CategoryAdapter(private val categories: List<Category>) :
+class CategoryAdapter(
+    private val onItemClick: (Category) -> Unit
+) :
     RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+
+    private var categories: List<Category> = emptyList()
+
 
     inner class CategoryViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(category: Category) {
             binding.tvCategoryName.text = category.name
             Glide.with(binding.root.context)
-                .load(category.iconUrl)
+                .load(category.imageUrl)
                 .into(binding.ivCategoryIcon)
+
+            binding.root.setOnClickListener {
+                onItemClick(category)
+            }
         }
     }
 
@@ -31,4 +40,9 @@ class CategoryAdapter(private val categories: List<Category>) :
     }
 
     override fun getItemCount(): Int = categories.size
+
+    fun setData(newCategories: List<Category>) {
+        this.categories = newCategories
+        notifyDataSetChanged()
+    }
 }

@@ -119,6 +119,13 @@
     <string name="replay">Replay</string>
     <string name="banla">Bạn là?</string>
     <string name="customer">Khách hàng</string>
+    <string name="error_saving">Xảy ra lỗi không xác định\n</string>
+    <string name="deleted">Đã xóa\n</string>
+    <string name="error_deleting">Xóa thất bại</string>
+    <string name="error_loading_data">Lỗi khi tải dư liệu\n</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 
 </resources>
